@@ -15,6 +15,7 @@ An extension for Text Mesh Pro that makes 3D text possible using shaders.
 - [ ] Bold text support
 - [ ] Solid, surface shader
 - [ ] Solid, unlit shader (UI)
+- [ ] Documentation
 
 ### In Evaluation
 - [ ] Bevelled text
