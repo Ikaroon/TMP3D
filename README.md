@@ -29,7 +29,7 @@ An extension for Text Mesh Pro that makes 3D text possible using shaders.
 1. Open the package manager in Unity from `Window>Package Manager`
 2. Select the `+` dropdown button in the top-left corner of the package manager
 3. Select `Add package from git URL...`
-4. Enter `https://github.com/Ikaroon/com.ikaroon.tmp3d.git` as url and confirm
+4. Enter `https://github.com/Ikaroon/TMP3D.git` as url and confirm
 
 ## Notice
 Work on this project happens in my freetime and, therefore, I cannot promise if and when certain features are added. I am considering to open this up for contribution but for now you can manipulate the code as you please. This project is MIT licensed and may be used freely. (Check the license file for more information)
