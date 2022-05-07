@@ -1,0 +1,32 @@
+{
+  "name": "com.ikaroon.tmp3d",
+  "version": "0.1.0-pre.1",
+  "displayName": "Text Mesh Pro 3D Support",
+  "description": "An extension for Text Mesh Pro that makes 3D text possible using shaders.",
+  "unity": "2020.3",
+  "dependencies": {
+    "com.unity.textmeshpro": "3.0.6"
+  },
+  "keywords": [
+    "ikaroon",
+    "tmp",
+    "textmesh",
+    "volumetric",
+    "text",
+    "shader",
+    "3d"
+  ],
+  "author": {
+    "name": "Ikaroon",
+    "email": "hi@marian-brinkmann.com",
+    "url": "https://marian-brinkmann.com/"
+  },
+  "samples": [
+    {
+      "displayName": "Solid Text",
+      "description": "Contains a sample font, material, script, and textures for a simple solid text",
+      "path": "Samples~/SamplesSolidText"
+    }
+  ],
+  "type": "library"
+}
