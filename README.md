@@ -1,4 +1,4 @@
-![TMP3D](https://user-images.githubusercontent.com/65419234/167267289-79726275-a87c-4f8e-a370-eb0b28c0036f.png)
+<p align=center><img alt="TMP3D Logo" width="400px" src="https://user-images.githubusercontent.com/65419234/167305638-76138392-b394-4e1e-b391-d59677b61762.png"/></p>
 
 <p align=center><a href="https://github.com/Ikaroon/com.ikaroon.tmp3d/blob/master/LICENSE"><img src="https://badgen.net/github/license/Naereen/Strapdown.js"/></a>
 <a href="https://GitHub.com/Ikaroon/com.ikaroon.tmp3d/releases/"><img src="https://img.shields.io/badge/Release-0.1.0--pre.1-yellow.svg"/></a>
