@@ -28,5 +28,9 @@
       "path": "Samples~/SamplesSolidText"
     }
   ],
-  "type": "library"
+  "type": "library",
+  "documentationUrl": "https://github.com/Ikaroon/TMP3D",
+  "changelogUrl": "https://github.com/Ikaroon/TMP3D/commits/main",
+  "license": "See LICENSE.md file",
+  "licensesUrl": "https://github.com/Ikaroon/TMP3D/blob/main/LICENSE"
 }
