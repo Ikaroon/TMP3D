@@ -2,7 +2,7 @@
 
 <p align=center><a href="https://github.com/Ikaroon/com.ikaroon.tmp3d/blob/master/LICENSE"><img src="https://badgen.net/github/license/Naereen/Strapdown.js"/></a>
 <a href="https://GitHub.com/Ikaroon/com.ikaroon.tmp3d/releases/"><img src="https://img.shields.io/badge/Release-0.1.0--pre.1-yellow.svg"/></a>
-<a href="https://ko-fi.com/ikaroon"><img src="https://img.shields.io/badge/Donate-Ko--Fi-red.svg"/></a></p>
+<img alt="GitHub (Pre-)Release Date" src="https://img.shields.io/github/release-date-pre/Ikaroon/TMP3D"></p>
 
 # Text Mesh Pro 3D
 An extension for Text Mesh Pro that makes 3D text possible using shaders.
@@ -54,4 +54,4 @@ Work on this project happens in my freetime and, therefore, I cannot promise if 
 ## Donation
 If this project helped you, you can treat me to a coffee if you want ☕
 
-[![Donate](https://img.shields.io/badge/Donate-Ko--Fi-red.svg)](https://ko-fi.com/ikaroon)
+[![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/B0B1CKI7W)
