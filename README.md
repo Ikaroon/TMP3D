@@ -23,6 +23,24 @@ An extension for Text Mesh Pro that makes 3D text possible using shaders.
 - [ ] Translucent, unlit shader
 - [ ] VR optimizations
 
+## Compatibility
+
+| Graphics API | Built-in                        | HDRP                            | URP                             |
+|--------------|---------------------------------|---------------------------------|---------------------------------|
+| DirectX 11   | :heavy_check_mark: Compatible   | :heavy_check_mark: Compatible   | :heavy_check_mark: Compatible   |
+| DirectX 12   | :heavy_check_mark: Compatible   | :heavy_check_mark: Compatible   | :heavy_check_mark: Compatible   |
+| Vulkan       | :heavy_check_mark: Compatible   | :heavy_check_mark: Compatible   | :heavy_check_mark: Compatible   |
+| OpenGL Core  | :heavy_check_mark: Compatible   | :warning: Invalid               | :heavy_check_mark: Compatible   |
+| OpenGLES2    | :x: Incompatible                | :warning: Invalid               | :x: Incompatible                |
+| OpenGLES3    | :heavy_check_mark: Compatible   | :warning: Invalid               | :heavy_check_mark: Compatible   |
+| Metal        | :wavy_dash: To Be Tested        | :wavy_dash: To Be Tested        | :wavy_dash: To Be Tested        |
+
+- *I currently don't have access to any Mac and, therefore, cannot test it for Metal right now.*
+- *Support for OpenGLES2 is currently **NOT** planned.*
+
+If the shader doesn't work for a compatible combination try to reimport the shader file first!
+When the issue persists contact me!
+
 ## Installation
 
 ![PackageInstallation](https://user-images.githubusercontent.com/65419234/167270188-99300531-ec7e-45ea-89d9-612ec1d37eaf.png)
@@ -52,6 +70,9 @@ If you still need help, here are some steps how you setup a TextMeshPro for 3D:
 Work on this project happens in my freetime and, therefore, I cannot promise if and when certain features are added. I am considering to open this up for contribution but for now you can manipulate the code as you please. This project is MIT licensed and may be used freely. (Check the license file for more information)
 
 ## Donation
-If this project helped you, you can treat me to a coffee if you want ☕
+If this project helped you, you can treat me to a coffee if you want :coffee:
 
 [![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/B0B1CKI7W)
+
+## Contact
+If you need support with this package please contact me: `support@marian-brinkmann.com`
