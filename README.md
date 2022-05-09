@@ -35,8 +35,8 @@ An extension for Text Mesh Pro that makes 3D text possible using shaders.
 | OpenGLES3     | :heavy_check_mark: Compatible   | :warning: Invalid               | :heavy_check_mark: Compatible   |
 | Metal[^2]     | :wavy_dash: To Be Tested        | :wavy_dash: To Be Tested        | :wavy_dash: To Be Tested        |
 
-[^1]: I currently don't have access to any Mac and, therefore, cannot test it for Metal right now.
-[^2]: Support for OpenGLES2 is currently **NOT** planned.
+[^1]: Support for OpenGLES2 is currently **NOT** planned.
+[^2]: I currently don't have access to any Mac and, therefore, cannot test it for Metal right now.
 
 If the shader doesn't work for a compatible combination try to reimport the shader file first!
 When the issue persists contact me!
