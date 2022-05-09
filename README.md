@@ -25,18 +25,18 @@ An extension for Text Mesh Pro that makes 3D text possible using shaders.
 
 ## Compatibility
 
-| Graphics API | Built-in                        | HDRP                            | URP                             |
-|--------------|---------------------------------|---------------------------------|---------------------------------|
-| DirectX 11   | :heavy_check_mark: Compatible   | :heavy_check_mark: Compatible   | :heavy_check_mark: Compatible   |
-| DirectX 12   | :heavy_check_mark: Compatible   | :heavy_check_mark: Compatible   | :heavy_check_mark: Compatible   |
-| Vulkan       | :heavy_check_mark: Compatible   | :heavy_check_mark: Compatible   | :heavy_check_mark: Compatible   |
-| OpenGL Core  | :heavy_check_mark: Compatible   | :warning: Invalid               | :heavy_check_mark: Compatible   |
-| OpenGLES2    | :x: Incompatible                | :warning: Invalid               | :x: Incompatible                |
-| OpenGLES3    | :heavy_check_mark: Compatible   | :warning: Invalid               | :heavy_check_mark: Compatible   |
-| Metal        | :wavy_dash: To Be Tested        | :wavy_dash: To Be Tested        | :wavy_dash: To Be Tested        |
+| Graphics API  | Built-in                        | HDRP                            | URP                             |
+|---------------|---------------------------------|---------------------------------|---------------------------------|
+| DirectX 11    | :heavy_check_mark: Compatible   | :heavy_check_mark: Compatible   | :heavy_check_mark: Compatible   |
+| DirectX 12    | :heavy_check_mark: Compatible   | :heavy_check_mark: Compatible   | :heavy_check_mark: Compatible   |
+| Vulkan        | :heavy_check_mark: Compatible   | :heavy_check_mark: Compatible   | :heavy_check_mark: Compatible   |
+| OpenGL Core   | :heavy_check_mark: Compatible   | :warning: Invalid               | :heavy_check_mark: Compatible   |
+| OpenGLES2[^1] | :x: Incompatible                | :warning: Invalid               | :x: Incompatible                |
+| OpenGLES3     | :heavy_check_mark: Compatible   | :warning: Invalid               | :heavy_check_mark: Compatible   |
+| Metal[^2]     | :wavy_dash: To Be Tested        | :wavy_dash: To Be Tested        | :wavy_dash: To Be Tested        |
 
-- *I currently don't have access to any Mac and, therefore, cannot test it for Metal right now.*
-- *Support for OpenGLES2 is currently **NOT** planned.*
+[^1]: I currently don't have access to any Mac and, therefore, cannot test it for Metal right now.
+[^2]: Support for OpenGLES2 is currently **NOT** planned.
 
 If the shader doesn't work for a compatible combination try to reimport the shader file first!
 When the issue persists contact me!
