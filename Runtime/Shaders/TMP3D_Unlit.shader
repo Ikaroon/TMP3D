@@ -2,20 +2,19 @@ Shader "TextMeshPro/3D/Unlit"
 {
 	Properties
 	{
-		_FaceTex("Face Texture", 2D) = "white" {}
-		_FaceUVSpeedX("Face UV Speed X", Range(-5, 5)) = 0.0
-		_FaceUVSpeedY("Face UV Speed Y", Range(-5, 5)) = 0.0
-		[HDR]_FaceColor("Face Color", Color) = (1,1,1,1)
-		_FaceDilate("Face Dilate", Range(-1,1)) = 0
+		// Face
+		_FaceColor("Face Color", Color) = (1,1,1,1)
 
-		_WeightNormal("Weight Normal", float) = 0
-		_WeightBold("Weight Bold", float) = 0.5
+		// 3D
+		_RaymarchMinStep("Raymarch min step", Range(0.001, 0.01)) = 0.001
+		_DepthAlbedo("Depth Albedo", 2D) = "white" {}
 
-		_ShaderFlags("Flags", float) = 0
-		_ScaleRatioA("Scale RatioA", float) = 1
-		_ScaleRatioB("Scale RatioB", float) = 1
-		_ScaleRatioC("Scale RatioC", float) = 1
+		// Outline
+		_OutlineColor("Outline Color", Color) = (0,0,0,1)
+		_OutlineWidth("Outline Thickness", Range(0,1)) = 0
+		_OutlineSoftness("Outline Softness", Range(0,1)) = 0
 
+		// Font Atlas properties
 		_MainTex("Font Atlas", 2D) = "white" {}
 		_TextureWidth("Texture Width", float) = 512
 		_TextureHeight("Texture Height", float) = 512
@@ -24,33 +23,9 @@ Shader "TextMeshPro/3D/Unlit"
 		_ScaleY("Scale Y", float) = 1.0
 		_PerspectiveFilter("Perspective Correction", Range(0, 1)) = 0.875
 		_Sharpness("Sharpness", Range(-1,1)) = 0
-
-		_VertexOffsetX("Vertex OffsetX", float) = 0
-		_VertexOffsetY("Vertex OffsetY", float) = 0
-
-		_MaskCoord("Mask Coordinates", vector) = (0, 0, 32767, 32767)
-		_ClipRect("Clip Rect", vector) = (-32767, -32767, 32767, 32767)
-		_MaskSoftnessX("Mask SoftnessX", float) = 0
-		_MaskSoftnessY("Mask SoftnessY", float) = 0
-
-		_StencilComp("Stencil Comparison", Float) = 8
-		_Stencil("Stencil ID", Float) = 0
-		_StencilOp("Stencil Operation", Float) = 0
-		_StencilWriteMask("Stencil Write Mask", Float) = 255
-		_StencilReadMask("Stencil Read Mask", Float) = 255
-
-		_ColorMask("Color Mask", Float) = 15
-		_Gradient("Gradient", 2D) = "white" {}
-
-		_RaymarchMinStep("Raymarch min step", Range(0.001, 0.01)) = 0.001
-
-		_OutlineColor("Outline Color", Color) = (0,0,0,1)
-		_OutlineWidth("Outline Thickness", Range(0,1)) = 0
-		_OutlineSoftness("Outline Softness", Range(0,1)) = 0
 	}
 	SubShader
 	{
-
 		Tags
 		{
 			"Queue" = "Geometry"
@@ -58,21 +33,10 @@ Shader "TextMeshPro/3D/Unlit"
 			"RenderType" = "Geometry"
 		}
 
-		Stencil
-		{
-			Ref[_Stencil]
-			Comp[_StencilComp]
-			Pass[_StencilOp]
-			ReadMask[_StencilReadMask]
-			WriteMask[_StencilWriteMask]
-		}
-
-		ZWrite On
 		Lighting Off
 		Fog { Mode Off }
-		ZTest[unity_GUIZTestMode]
+
 		Blend SrcAlpha OneMinusSrcAlpha
-		ColorMask[_ColorMask]
 
 		Pass
 		{
@@ -87,11 +51,7 @@ Shader "TextMeshPro/3D/Unlit"
 			#pragma require geometry
 
 			#include "UnityCG.cginc"
-			#include "TMPro_Properties.cginc"
 			#include "TMP3D_Common.cginc"
-
-			sampler2D _Gradient;
-			float _RaymarchMinStep;
 
 			struct fragOutput
 			{
@@ -165,7 +125,7 @@ Shader "TextMeshPro/3D/Unlit"
 						float depth = -localPos.z;
 						float progress = saturate(InverseLerp(0, charDepth, depth));
 						progress = saturate(lerp(depthMapped.x, depthMapped.y, progress));
-						float3 c = tex2D(_Gradient, float2(progress, 0.5));
+						float3 c = tex2D(_DepthAlbedo, float2(progress, 0.5)) * _FaceColor.rgb;
 
 						o.depth = compute_depth(mul(UNITY_MATRIX_VP, float4(GetRaymarchWorldPosition().xyz, 1)));
 						o.color = float4(c.rgb * input.color, 1);
@@ -189,6 +149,5 @@ Shader "TextMeshPro/3D/Unlit"
 			ENDCG
 		}
 	}
-	Fallback "TextMeshPro/Mobile/Distance Field"
 	CustomEditor "Ikaroon.TMP3DEditor.TMP3D_UnlitShaderGUI"
 }

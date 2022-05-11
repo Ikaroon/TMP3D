@@ -17,7 +17,7 @@ namespace Ikaroon.TMP3DEditor
 
 		static bool s_Face = true;
 		static bool s_Outline = true;
-		static bool s_Raymarch = true;
+		static bool s_3D = true;
 
 		const string c_volumeModeSurface = "_VOLUMEMODE_SURFACE";
 		const string c_volumeModeFull = "_VOLUMEMODE_FULL";
@@ -61,10 +61,10 @@ namespace Ikaroon.TMP3DEditor
 
 			EndPanel();
 
-			s_Raymarch = BeginPanel("Raymarch", s_Raymarch);
-			if (s_Raymarch)
+			s_3D = BeginPanel("3D", s_3D);
+			if (s_3D)
 			{
-				DoRaymarchPanel();
+				Do3DPanel();
 			}
 
 			EndPanel();
@@ -98,7 +98,7 @@ namespace Ikaroon.TMP3DEditor
 			EditorGUILayout.Space();
 		}
 
-		void DoRaymarchPanel()
+		void Do3DPanel()
 		{
 			EditorGUI.indentLevel += 1;
 
@@ -120,6 +120,7 @@ namespace Ikaroon.TMP3DEditor
 			}
 
 			DoSlider("_RaymarchMinStep", "Min Step");
+			DoTexture2D("_DepthAlbedo", "Depth Albedo");
 
 			EditorGUI.indentLevel -= 1;
 			EditorGUILayout.Space();
@@ -132,22 +133,6 @@ namespace Ikaroon.TMP3DEditor
 			DoFloat("_GradientScale", "Gradient Scale");
 			DoFloat("_TextureWidth", "Texture Width");
 			DoFloat("_TextureHeight", "Texture Height");
-			EditorGUILayout.Space();
-			DoFloat("_ScaleX", "Scale X");
-			DoFloat("_ScaleY", "Scale Y");
-
-			DoSlider("_PerspectiveFilter", "Perspective Filter");
-			EditorGUILayout.Space();
-			DoFloat("_VertexOffsetX", "Offset X");
-			DoFloat("_VertexOffsetY", "Offset Y");
-
-			EditorGUILayout.Space();
-
-			EditorGUI.BeginDisabledGroup(true);
-			DoFloat("_ScaleRatioA", "Scale Ratio A");
-			DoFloat("_ScaleRatioB", "Scale Ratio B");
-			DoFloat("_ScaleRatioC", "Scale Ratio C");
-			EditorGUI.EndDisabledGroup();
 			EditorGUI.indentLevel -= 1;
 			EditorGUILayout.Space();
 		}
