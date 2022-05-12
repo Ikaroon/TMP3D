@@ -1,7 +1,7 @@
 <p align=center><img alt="TMP3D Logo" width="400px" src="https://user-images.githubusercontent.com/65419234/167305638-76138392-b394-4e1e-b391-d59677b61762.png"/></p>
 
 <p align=center><a href="https://github.com/Ikaroon/com.ikaroon.tmp3d/blob/master/LICENSE"><img src="https://badgen.net/github/license/Naereen/Strapdown.js"/></a>
-<a href="https://GitHub.com/Ikaroon/com.ikaroon.tmp3d/releases/"><img src="https://img.shields.io/badge/Release-0.1.0--pre.1-yellow.svg"/></a>
+<a href="https://GitHub.com/Ikaroon/com.ikaroon.tmp3d/releases/"><img src="https://img.shields.io/badge/release-0.1.0--pre.1-yellow.svg"/></a>
 <img alt="GitHub (Pre-)Release Date" src="https://img.shields.io/github/release-date-pre/Ikaroon/TMP3D"></p>
 
 # Text Mesh Pro 3D
