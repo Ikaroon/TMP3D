@@ -1,6 +1,6 @@
 {
   "name": "com.ikaroon.tmp3d",
-  "version": "0.1.0-pre.1",
+  "version": "0.1.0-pre.2",
   "displayName": "Text Mesh Pro 3D Support",
   "description": "An extension for Text Mesh Pro that makes 3D text possible using shaders.",
   "unity": "2020.3",
@@ -30,7 +30,7 @@
   ],
   "type": "library",
   "documentationUrl": "https://github.com/Ikaroon/TMP3D",
-  "changelogUrl": "https://github.com/Ikaroon/TMP3D/commits/main",
+  "changelogUrl": "https://github.com/Ikaroon/TMP3D/blob/main/CHANGELOG.md",
   "license": "See LICENSE.md file",
   "licensesUrl": "https://github.com/Ikaroon/TMP3D/blob/main/LICENSE"
 }
