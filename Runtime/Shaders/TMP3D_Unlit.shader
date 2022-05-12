@@ -1,9 +1,13 @@
+// Upgrade NOTE: replaced 'mul(UNITY_MATRIX_MVP,*)' with 'UnityObjectToClipPos(*)'
+
 Shader "TextMeshPro/3D/Unlit"
 {
 	Properties
 	{
-		// Face
-		_FaceColor("Face Color", Color) = (1,1,1,1)
+		// General
+		_Color("Color", Color) = (1,1,1,1)
+		_WeightBold("Weight Bold", Range(0,1)) = 0.6
+		_WeightNormal("Weight Normal", Range(0,1)) = 0.5
 
 		// 3D
 		_RaymarchMinStep("Raymarch min step", Range(0.001, 0.01)) = 0.001
@@ -23,6 +27,11 @@ Shader "TextMeshPro/3D/Unlit"
 		_ScaleY("Scale Y", float) = 1.0
 		_PerspectiveFilter("Perspective Correction", Range(0, 1)) = 0.875
 		_Sharpness("Sharpness", Range(-1,1)) = 0
+
+		// TMP INTERNAL
+		_ScaleRatioA("Scale Ratio A", float) = 1.0
+		_ScaleRatioB("Scale Ratio B", float) = 1.0
+		_ScaleRatioC("Scale Ratio C", float) = 1.0
 	}
 	SubShader
 	{
@@ -46,12 +55,31 @@ Shader "TextMeshPro/3D/Unlit"
 			#pragma geometry TMP3D_GEOM_VARIANT
 			#pragma fragment TMP3D_FRAG_UNLIT
 
-			#pragma multi_compile _VOLUMEMODE_SURFACE _VOLUMEMODE_FULL
+			#pragma multi_compile _RAYMARCHER_STANDARD _RAYMARCHER_PENALTY
+			#pragma multi_compile _MAXSTEPS_32 _MAXSTEPS_64 _MAXSTEPS_96 _MAXSTEPS_128
 
 			#pragma require geometry
 
 			#include "UnityCG.cginc"
-			#include "TMP3D_Common.cginc"
+			#include "Lib/TMP3D_Common.cginc"
+
+			#if _RAYMARCHER_STANDARD
+			#include "Lib/Raymarching/StandardMarcher.cginc"
+			#elif _RAYMARCHER_PENALTY
+			#include "Lib/Raymarching/PenaltyMarcher.cginc"
+			#endif
+
+			#if _MAXSTEPS_32
+			#define MAX_STEPS 32
+			#elif _MAXSTEPS_64
+			#define MAX_STEPS 64
+			#elif _MAXSTEPS_96
+			#define MAX_STEPS 96
+			#elif _MAXSTEPS_128
+			#define MAX_STEPS 128
+			#else
+			#define MAX_STEPS 16
+			#endif
 
 			struct fragOutput
 			{
@@ -87,29 +115,26 @@ Shader "TextMeshPro/3D/Unlit"
 				o.color = 0;
 				fixed outline = 0;
 
-				float c = tex2D(_MainTex, input.atlas).a;
-
-				#if _VOLUMEMODE_SURFACE
-				PrepareTMP3DRaymarch(input);
-				#elif _VOLUMEMODE_FULL
-				PrepareTMP3DRaymarchInverted(input);
-				#endif
+				float bold = step(input.tmp.y, 0);
+				float edge = lerp(_WeightNormal, _WeightBold, bold);
 
 				float charDepth = input.tmp3d.x;
 				float2 depthMapped = input.tmp3d.yz;
 
-				for (int i = 0; i < 100; i++)
+				InitializeRaymarcher(input);
+
+				for (int i = 0; i < MAX_STEPS; i++)
 				{
-					float3 localPos = GetRaymarchLocalPosition();
-					float3 mask3D = PositionToMask(localPos, input);
+					float3 localPos;
+					float bound;
+					float value;
 
-					float bound = IsInBounds(mask3D);
+					float offset = lerp(edge + _OutlineWidth, edge, outline);
+					NextRaymarch(localPos, bound, value, offset);
 
-					float value = -(SampleSDF3D(saturate(mask3D), input) * 2 - 1);
-
-					if (value <= _OutlineWidth)
+					if (value <= edge + _OutlineWidth)
 					{
-						o.depth = compute_depth(mul(UNITY_MATRIX_VP, float4(GetRaymarchWorldPosition().xyz, 1)));
+						o.depth = compute_depth(UnityObjectToClipPos(localPos));
 						o.color = _OutlineColor;
 						outline = 1;
 					}
@@ -118,29 +143,20 @@ Shader "TextMeshPro/3D/Unlit"
 					{
 						return o;
 					}
+
 					clip(bound);
 
-					if (value <= 0)
+					if (value <= edge)
 					{
 						float depth = -localPos.z;
 						float progress = saturate(InverseLerp(0, charDepth, depth));
 						progress = saturate(lerp(depthMapped.x, depthMapped.y, progress));
-						float3 c = tex2D(_DepthAlbedo, float2(progress, 0.5)) * _FaceColor.rgb;
+						float3 c = tex2D(_DepthAlbedo, float2(progress, 0.5)) * _Color.rgb;
 
-						o.depth = compute_depth(mul(UNITY_MATRIX_VP, float4(GetRaymarchWorldPosition().xyz, 1)));
+						o.depth = compute_depth(UnityObjectToClipPos(localPos));
 						o.color = float4(c.rgb * input.color, 1);
 						return o;
 					}
-
-					float sdfDistance = max((value - lerp(_OutlineWidth, 0.01, outline)) * (GradientToLocalLength(input) * 0.5), _RaymarchMinStep);
-					float3 viewDir = GetRaymarchLocalDirection();
-					float length1 = length(normalize(viewDir.xy) * sdfDistance);
-					float length2 = length(viewDir.xy);
-
-					float ratio = length1 / length2;
-					viewDir *= ratio;
-
-					ProgressRaymarch(length(viewDir));
 				}
 
 				return o;

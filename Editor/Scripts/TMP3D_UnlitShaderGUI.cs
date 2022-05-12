@@ -7,54 +7,57 @@ namespace Ikaroon.TMP3DEditor
 {
 	public class TMP3D_UnlitShaderGUI : TMP_BaseShaderGUI
 	{
-		public enum VolumeMode
-		{
-			Surface,
-			Full
-		}
+		static ShaderFeature s_outlineFeature;
+		static TMP3D_ShaderFeature s_volumeModeFeature;
+		static TMP3D_ShaderFeature s_raymarchModeFeature;
+		static TMP3D_ShaderFeature s_maxStepsFeature;
 
-		static ShaderFeature s_OutlineFeature;
-
-		static bool s_Face = true;
-		static bool s_Outline = true;
+		static bool s_general = true;
+		static bool s_outline = true;
 		static bool s_3D = true;
-
-		const string c_volumeModeSurface = "_VOLUMEMODE_SURFACE";
-		const string c_volumeModeFull = "_VOLUMEMODE_FULL";
 
 		static TMP3D_UnlitShaderGUI()
 		{
-			s_OutlineFeature = new ShaderFeature()
+			s_outlineFeature = new ShaderFeature()
 			{
 				undoLabel = "Outline",
 				keywords = new[] { "OUTLINE_ON" }
 			};
-		}
-
-		VolumeMode GetVolumeMode(Material material)
-		{
-			if (material.IsKeywordEnabled(c_volumeModeSurface))
-				return VolumeMode.Surface;
-
-			if (material.IsKeywordEnabled(c_volumeModeFull))
-				return VolumeMode.Full;
-
-			material.EnableKeyword(c_volumeModeSurface);
-			return VolumeMode.Surface;
+			s_volumeModeFeature = new TMP3D_ShaderFeature()
+			{
+				undoLabel = "VolumeMode",
+				label = new GUIContent("Volume Mode"),
+				keywords = new[] { "_VOLUMEMODE_SURFACE", "_VOLUMEMODE_FULL" },
+				keywordLabels = new[] { new GUIContent("Surface"), new GUIContent("Full") }
+			};
+			s_raymarchModeFeature = new TMP3D_ShaderFeature()
+			{
+				undoLabel = "RaymarchMode",
+				label = new GUIContent("Raymarch Mode"),
+				keywords = new[] { "_RAYMARCHER_STANDARD", "_RAYMARCHER_PENALTY" },
+				keywordLabels = new[] { new GUIContent("Standard"), new GUIContent("Penalty") }
+			};
+			s_maxStepsFeature = new TMP3D_ShaderFeature()
+			{
+				undoLabel = "MaxSteps",
+				label = new GUIContent("Max Steps"),
+				keywords = new[] { "_MAXSTEPS_32", "_MAXSTEPS_64", "_MAXSTEPS_96", "_MAXSTEPS_128" },
+				keywordLabels = new[] { new GUIContent("32"), new GUIContent("64"), new GUIContent("96"), new GUIContent("128") }
+			};
 		}
 
 		protected override void DoGUI()
 		{
-			s_Face = BeginPanel("Face", s_Face);
-			if (s_Face)
+			s_general = BeginPanel("General", s_general);
+			if (s_general)
 			{
-				DoFacePanel();
+				DoGeneralPanel();
 			}
 
 			EndPanel();
 
-			s_Outline = BeginPanel("Outline", s_OutlineFeature, s_Outline);
-			if (s_Outline)
+			s_outline = BeginPanel("Outline", s_outlineFeature, s_outline);
+			if (s_outline)
 			{
 				DoOutlinePanel();
 			}
@@ -78,11 +81,13 @@ namespace Ikaroon.TMP3DEditor
 			EndPanel();
 		}
 
-		void DoFacePanel()
+		void DoGeneralPanel()
 		{
 			EditorGUI.indentLevel += 1;
 
-			DoColor("_FaceColor", "Color");
+			DoColor("_Color", "Color");
+			DoSlider("_WeightBold", "Weight Bold");
+			DoSlider("_WeightNormal", "Weight Normal");
 
 			EditorGUI.indentLevel -= 1;
 			EditorGUILayout.Space();
@@ -102,22 +107,13 @@ namespace Ikaroon.TMP3DEditor
 		{
 			EditorGUI.indentLevel += 1;
 
-			var mode = GetVolumeMode(m_Material);
-			var targetMode = (VolumeMode)EditorGUILayout.EnumPopup(new GUIContent("Volume Mode"), mode);
-			if (targetMode != mode)
-			{
-				switch (targetMode)
-				{
-					case VolumeMode.Surface:
-						m_Material.EnableKeyword(c_volumeModeSurface);
-						m_Material.DisableKeyword(c_volumeModeFull);
-						break;
-					case VolumeMode.Full:
-						m_Material.EnableKeyword(c_volumeModeFull);
-						m_Material.DisableKeyword(c_volumeModeSurface);
-						break;
-				}
-			}
+			s_volumeModeFeature.ReadState(m_Material);
+			s_raymarchModeFeature.ReadState(m_Material);
+			s_maxStepsFeature.ReadState(m_Material);
+
+			s_volumeModeFeature.DoPopup(m_Editor, m_Material);
+			s_raymarchModeFeature.DoPopup(m_Editor, m_Material);
+			s_maxStepsFeature.DoPopup(m_Editor, m_Material);
 
 			DoSlider("_RaymarchMinStep", "Min Step");
 			DoTexture2D("_DepthAlbedo", "Depth Albedo");

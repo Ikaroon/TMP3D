@@ -47,107 +47,6 @@ float GradientToLocalLength(tmp3d_g2f input)
 	return l * 0.01 * _GradientScale;
 }
 
-float3 Temp_ViewDir;
-float3 Temp_LocalStartPos;
-float3 Temp_LocalPos;
-
-void PrepareTMP3DRaymarch(tmp3d_g2f input)
-{
-	float3 viewDir = normalize(input.worldPos.xyz - _WorldSpaceCameraPos.xyz);
-
-	// TODO: This "if" is ugly...
-	if (unity_OrthoParams.w >= 0.5)
-	{
-		viewDir = normalize(mul((float3x3)unity_CameraToWorld, float3(0, 0, 1)));
-	}
-
-	Temp_LocalPos = mul(unity_WorldToObject, float4(input.worldPos.xyz, 1));
-	Temp_LocalStartPos = Temp_LocalPos;
-	Temp_ViewDir = mul((float3x3)unity_WorldToObject, viewDir);
-}
-
-float3 ProjectRayOntoPlane(float3 origin, float3 direction, float3 normal, float distance)
-{
-	float denom = dot(normal, direction);
-
-	if (abs(denom) <= 1e-3)
-		return 0;
-
-	float t = -(dot(normal, origin) + distance) / dot(normal, direction);
-
-	if (t <= 1e-3)
-		return 0;
-
-	return t * direction;
-}
-
-void PrepareTMP3DRaymarchInverted(tmp3d_g2f input)
-{
-	PrepareTMP3DRaymarch(input);
-
-	float3 negViewDir = -Temp_ViewDir;
-	float3 x = ProjectRayOntoPlane(Temp_LocalPos, negViewDir, float3(-1, 0, 0), input.boundariesLocal.x);
-	x += ProjectRayOntoPlane(Temp_LocalPos, negViewDir, float3(-1, 0, 0), input.boundariesLocal.z);
-
-	float3 y = ProjectRayOntoPlane(Temp_LocalPos, negViewDir, float3(0, -1, 0), input.boundariesLocal.y);
-	y += ProjectRayOntoPlane(Temp_LocalPos, negViewDir, float3(0, -1, 0), input.boundariesLocal.w);
-
-	float3 z = ProjectRayOntoPlane(Temp_LocalPos, negViewDir, float3(0, 0, -1), input.boundariesLocalZ.x);
-	z += ProjectRayOntoPlane(Temp_LocalPos, negViewDir, float3(0, 0, -1), input.boundariesLocalZ.y);
-
-	float3 c = mul((float3x3)unity_WorldToObject, _WorldSpaceCameraPos.xyz - input.worldPos.xyz);
-
-	float xL = length(x);
-	float yL = length(y);
-	float zL = length(z);
-	float cL = length(c);
-
-	// TODO: This is majorly ugly...
-	if (cL <= xL && cL <= yL && cL <= zL)
-	{
-		Temp_LocalPos += c;
-		Temp_LocalStartPos = Temp_LocalPos;
-		return;
-	}
-
-	if (xL <= yL && xL <= zL)
-	{
-		Temp_LocalPos += x;
-		Temp_LocalStartPos = Temp_LocalPos;
-		return;
-	}
-
-	if (yL <= zL)
-	{
-		Temp_LocalPos += y;
-		Temp_LocalStartPos = Temp_LocalPos;
-		return;
-	}
-
-	Temp_LocalPos += z;
-	Temp_LocalStartPos = Temp_LocalPos;
-}
-
-float3 GetRaymarchLocalPosition()
-{
-	return Temp_LocalPos;
-}
-
-float3 GetRaymarchWorldPosition()
-{
-	return mul(unity_ObjectToWorld, float4(Temp_LocalPos.xyz, 1));
-}
-
-float3 GetRaymarchLocalDirection()
-{
-	return Temp_ViewDir;
-}
-
-void ProgressRaymarch(float progress)
-{
-	Temp_LocalPos += Temp_ViewDir * max(progress, 0.005);
-}
-
 tmp3d_v2g TMP3D_VERT(tmp3d_a2v input)
 {
 	tmp3d_v2g output;
@@ -188,6 +87,7 @@ tmp3d_g2f CreateVertex(tmp3d_v2g input, float3 positionOffset, float4 boundaries
 	output.boundariesLocal = boundariesLocal;
 	output.boundariesLocalZ = boundariesLocalZ;
 	output.tmp3d = input.texcoord2;
+	output.tmp = input.texcoord1;
 
 	return output;
 }
