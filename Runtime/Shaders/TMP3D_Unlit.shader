@@ -1,20 +1,24 @@
-Shader "TextMeshPro/3D/Unlit" {
+// Upgrade NOTE: replaced 'mul(UNITY_MATRIX_MVP,*)' with 'UnityObjectToClipPos(*)'
 
-	Properties{
-		_FaceTex("Face Texture", 2D) = "white" {}
-		_FaceUVSpeedX("Face UV Speed X", Range(-5, 5)) = 0.0
-		_FaceUVSpeedY("Face UV Speed Y", Range(-5, 5)) = 0.0
-		[HDR]_FaceColor("Face Color", Color) = (1,1,1,1)
-		_FaceDilate("Face Dilate", Range(-1,1)) = 0
+Shader "TextMeshPro/3D/Unlit"
+{
+	Properties
+	{
+		// General
+		_Color("Color", Color) = (1,1,1,1)
+		_WeightBold("Weight Bold", Range(0,1)) = 0.6
+		_WeightNormal("Weight Normal", Range(0,1)) = 0.5
 
-		_WeightNormal("Weight Normal", float) = 0
-		_WeightBold("Weight Bold", float) = 0.5
+		// 3D
+		_RaymarchMinStep("Raymarch min step", Range(0.001, 0.01)) = 0.001
+		_DepthAlbedo("Depth Albedo", 2D) = "white" {}
 
-		_ShaderFlags("Flags", float) = 0
-		_ScaleRatioA("Scale RatioA", float) = 1
-		_ScaleRatioB("Scale RatioB", float) = 1
-		_ScaleRatioC("Scale RatioC", float) = 1
+		// Outline
+		_OutlineColor("Outline Color", Color) = (0,0,0,1)
+		_OutlineWidth("Outline Thickness", Range(0,1)) = 0
+		_OutlineSoftness("Outline Softness", Range(0,1)) = 0
 
+		// Font Atlas properties
 		_MainTex("Font Atlas", 2D) = "white" {}
 		_TextureWidth("Texture Width", float) = 512
 		_TextureHeight("Texture Height", float) = 512
@@ -24,178 +28,142 @@ Shader "TextMeshPro/3D/Unlit" {
 		_PerspectiveFilter("Perspective Correction", Range(0, 1)) = 0.875
 		_Sharpness("Sharpness", Range(-1,1)) = 0
 
-		_VertexOffsetX("Vertex OffsetX", float) = 0
-		_VertexOffsetY("Vertex OffsetY", float) = 0
-
-		_MaskCoord("Mask Coordinates", vector) = (0, 0, 32767, 32767)
-		_ClipRect("Clip Rect", vector) = (-32767, -32767, 32767, 32767)
-		_MaskSoftnessX("Mask SoftnessX", float) = 0
-		_MaskSoftnessY("Mask SoftnessY", float) = 0
-
-		_StencilComp("Stencil Comparison", Float) = 8
-		_Stencil("Stencil ID", Float) = 0
-		_StencilOp("Stencil Operation", Float) = 0
-		_StencilWriteMask("Stencil Write Mask", Float) = 255
-		_StencilReadMask("Stencil Read Mask", Float) = 255
-
-		_ColorMask("Color Mask", Float) = 15
-		_Gradient("Gradient", 2D) = "white" {}
-
-		[KeywordEnum(Simple, Full)] _RAYMARCH("Raymarch type", Float) = 0
-		_RaymarchMinStep("Raymarch min step", Range(0.001, 0.01)) = 0.001
-		_Depth("3D Depth", Float) = 1
-
-		_OutlineColor("Outline Color", Color) = (0,0,0,1)
-		_OutlineWidth("Outline Thickness", Range(0,1)) = 0
-		_OutlineSoftness("Outline Softness", Range(0,1)) = 0
+		// TMP INTERNAL
+		_ScaleRatioA("Scale Ratio A", float) = 1.0
+		_ScaleRatioB("Scale Ratio B", float) = 1.0
+		_ScaleRatioC("Scale Ratio C", float) = 1.0
 	}
-
-		SubShader{
-
-			Tags
-			{
-				"Queue" = "Geometry"
-				"IgnoreProjector" = "True"
-				"RenderType" = "Geometry"
-			}
-
-			Stencil
-			{
-				Ref[_Stencil]
-				Comp[_StencilComp]
-				Pass[_StencilOp]
-				ReadMask[_StencilReadMask]
-				WriteMask[_StencilWriteMask]
-			}
-
-			ZWrite On
-			Lighting Off
-			Fog { Mode Off }
-			ZTest[unity_GUIZTestMode]
-			Blend SrcAlpha OneMinusSrcAlpha
-			ColorMask[_ColorMask]
-
-			Pass {
-				CGPROGRAM
-				#pragma target 3.0
-				#pragma vertex TMP3D_VERT
-				#pragma geometry TMP3D_GEOM_VARIANT
-				#pragma fragment TMP3D_FRAG_UNLIT
-
-				#pragma shader_feature __ BEVEL_ON
-				#pragma shader_feature __ UNDERLAY_ON UNDERLAY_INNER
-				#pragma shader_feature __ GLOW_ON
-
-				#pragma multi_compile __ UNITY_UI_CLIP_RECT
-				#pragma multi_compile __ UNITY_UI_ALPHACLIP
-
-				#pragma multi_compile _RAYMARCH_SIMPLE _RAYMARCH_FULL
-
-				#pragma require geometry
-
-				#include "UnityCG.cginc"
-				#include "UnityUI.cginc"
-				#include "TMPro_Properties.cginc"
-				#include "TMP3D_Common.cginc"
-
-				sampler2D _Gradient;
-				float _RaymarchMinStep;
-
-				struct fragOutput {
-					fixed4 color : SV_Target;
-					float depth : SV_Depth;
-				};
-
-				float compute_depth(float4 clippos)
-				{
-					#if defined(SHADER_TARGET_GLSL) || defined(SHADER_API_GLES) || defined(SHADER_API_GLES3)
-					return ((clippos.z / clippos.w) + 1.0) * 0.5;
-					#else
-					return clippos.z / clippos.w;
-					#endif
-				}
-
-				[maxvertexcount(24)]
-				void TMP3D_GEOM_VARIANT(triangle tmp3d_v2g input[3], inout TriangleStream<tmp3d_g2f> triStream)
-				{
-					#if _RAYMARCH_SIMPLE
-					TMP3D_GEOM(input, triStream);
-					#elif _RAYMARCH_FULL
-					TMP3D_GEOM_INVERTED(input, triStream);
-					#endif
-				}
-
-				fragOutput TMP3D_FRAG_UNLIT(tmp3d_g2f input)
-				{
-					UNITY_SETUP_INSTANCE_ID(input);
-
-					fragOutput o;
-					o.depth = 0;
-					o.color = 0;
-					fixed outline = 0;
-
-					float c = tex2D(_MainTex, input.atlas).a;
-
-					#if _RAYMARCH_SIMPLE
-					PrepareTMP3DRaymarch(input);
-					#elif _RAYMARCH_FULL
-					PrepareTMP3DRaymarchInverted(input);
-					#endif
-
-					float charDepth = input.tmp3d.x;
-					float2 depthMapped = input.tmp3d.yz;
-
-					for (int i = 0; i < 100; i++)
-					{
-						float3 localPos = GetRaymarchLocalPosition();
-						float3 mask3D = PositionToMask(localPos, input);
-
-						float bound = IsInBounds(mask3D);
-
-						float value = -(SampleSDF3D(saturate(mask3D), input) * 2 - 1);
-
-						if (value <= _OutlineWidth)
-						{
-							o.depth = compute_depth(mul(UNITY_MATRIX_VP, float4(GetRaymarchWorldPosition().xyz, 1)));
-							o.color = _OutlineColor;
-							outline = 1;
-						}
-
-						if (bound < 0 && outline > 0.5)
-						{
-							return o;
-						}
-						clip(bound);
-
-						if (value <= 0)
-						{
-							float depth = -localPos.z;
-							float progress = saturate(InverseLerp(0, charDepth, depth));
-							progress = saturate(lerp(depthMapped.x, depthMapped.y, progress));
-							float3 c = tex2D(_Gradient, float2(progress, 0.5));
-
-							o.depth = compute_depth(mul(UNITY_MATRIX_VP, float4(GetRaymarchWorldPosition().xyz, 1)));
-							o.color = float4(c.rgb * input.color, 1);
-							return o;
-						}
-
-						float sdfDistance = max((value - lerp(_OutlineWidth, 0.01, outline)) * (GradientToLocalLength(input) * 0.5), _RaymarchMinStep);
-						float3 viewDir = GetRaymarchLocalDirection();
-						float length1 = length(normalize(viewDir.xy) * sdfDistance);
-						float length2 = length(viewDir.xy);
-
-						float ratio = length1 / length2;
-						viewDir *= ratio;
-
-						ProgressRaymarch(length(viewDir));
-					}
-
-					return o;
-				}
-
-				ENDCG
-			}
+	SubShader
+	{
+		Tags
+		{
+			"Queue" = "Geometry"
+			"IgnoreProjector" = "True"
+			"RenderType" = "Geometry"
 		}
 
-			Fallback "TextMeshPro/Mobile/Distance Field"
+		Lighting Off
+		Fog { Mode Off }
+
+		Blend SrcAlpha OneMinusSrcAlpha
+
+		Pass
+		{
+			CGPROGRAM
+			#pragma target 3.0
+			#pragma vertex TMP3D_VERT
+			#pragma geometry TMP3D_GEOM_VARIANT
+			#pragma fragment TMP3D_FRAG_UNLIT
+
+			#pragma multi_compile _RAYMARCHER_STANDARD _RAYMARCHER_PENALTY
+			#pragma multi_compile _MAXSTEPS_32 _MAXSTEPS_64 _MAXSTEPS_96 _MAXSTEPS_128
+
+			#pragma require geometry
+
+			#include "UnityCG.cginc"
+			#include "Lib/TMP3D_Common.cginc"
+
+			#if _RAYMARCHER_STANDARD
+			#include "Lib/Raymarching/StandardMarcher.cginc"
+			#elif _RAYMARCHER_PENALTY
+			#include "Lib/Raymarching/PenaltyMarcher.cginc"
+			#endif
+
+			#if _MAXSTEPS_32
+			#define MAX_STEPS 32
+			#elif _MAXSTEPS_64
+			#define MAX_STEPS 64
+			#elif _MAXSTEPS_96
+			#define MAX_STEPS 96
+			#elif _MAXSTEPS_128
+			#define MAX_STEPS 128
+			#else
+			#define MAX_STEPS 16
+			#endif
+
+			struct fragOutput
+			{
+				fixed4 color : SV_Target;
+				float depth : SV_Depth;
+			};
+
+			float compute_depth(float4 clippos)
+			{
+				#if defined(SHADER_TARGET_GLSL) || defined(SHADER_API_GLES) || defined(SHADER_API_GLES3)
+				return ((clippos.z / clippos.w) + 1.0) * 0.5;
+				#else
+				return clippos.z / clippos.w;
+				#endif
+			}
+
+			[maxvertexcount(24)]
+			void TMP3D_GEOM_VARIANT(triangle tmp3d_v2g input[3], inout TriangleStream<tmp3d_g2f> triStream)
+			{
+				#if _VOLUMEMODE_SURFACE
+				TMP3D_GEOM(input, triStream);
+				#elif _VOLUMEMODE_FULL
+				TMP3D_GEOM_INVERTED(input, triStream);
+				#endif
+			}
+
+			fragOutput TMP3D_FRAG_UNLIT(tmp3d_g2f input)
+			{
+				UNITY_SETUP_INSTANCE_ID(input);
+
+				fragOutput o;
+				o.depth = 0;
+				o.color = 0;
+				fixed outline = 0;
+
+				float bold = step(input.tmp.y, 0);
+				float edge = lerp(_WeightNormal, _WeightBold, bold);
+
+				float charDepth = input.tmp3d.x;
+				float2 depthMapped = input.tmp3d.yz;
+
+				InitializeRaymarcher(input);
+
+				for (int i = 0; i < MAX_STEPS; i++)
+				{
+					float3 localPos;
+					float bound;
+					float value;
+
+					float offset = lerp(edge + _OutlineWidth, edge, outline);
+					NextRaymarch(localPos, bound, value, offset);
+
+					if (value <= edge + _OutlineWidth)
+					{
+						o.depth = compute_depth(UnityObjectToClipPos(localPos));
+						o.color = _OutlineColor;
+						outline = 1;
+					}
+
+					if (bound < 0 && outline > 0.5)
+					{
+						return o;
+					}
+
+					clip(bound);
+
+					if (value <= edge)
+					{
+						float depth = -localPos.z;
+						float progress = saturate(InverseLerp(0, charDepth, depth));
+						progress = saturate(lerp(depthMapped.x, depthMapped.y, progress));
+						float3 c = tex2D(_DepthAlbedo, float2(progress, 0.5)) * _Color.rgb;
+
+						o.depth = compute_depth(UnityObjectToClipPos(localPos));
+						o.color = float4(c.rgb * input.color, 1);
+						return o;
+					}
+				}
+
+				return o;
+			}
+
+			ENDCG
+		}
+	}
+	CustomEditor "Ikaroon.TMP3DEditor.TMP3D_UnlitShaderGUI"
 }
