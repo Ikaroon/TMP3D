@@ -55,6 +55,7 @@ Shader "TextMeshPro/3D/Unlit"
 			#pragma geometry TMP3D_GEOM_VARIANT
 			#pragma fragment TMP3D_FRAG_UNLIT
 
+			#pragma multi_compile __ OUTLINE_ON
 			#pragma multi_compile _RAYMARCHER_STANDARD _RAYMARCHER_PENALTY
 			#pragma multi_compile _MAXSTEPS_32 _MAXSTEPS_64 _MAXSTEPS_96 _MAXSTEPS_128
 
@@ -129,9 +130,13 @@ Shader "TextMeshPro/3D/Unlit"
 					float bound;
 					float value;
 
-					float offset = lerp(edge + _OutlineWidth, edge, outline);
+					float offset = edge;
+					#if OUTLINE_ON
+					offset += lerp(_OutlineWidth, 0, outline);
+					#endif
 					NextRaymarch(localPos, bound, value, offset);
 
+					#if OUTLINE_ON
 					if (value <= edge + _OutlineWidth)
 					{
 						o.depth = compute_depth(UnityObjectToClipPos(localPos));
@@ -143,6 +148,7 @@ Shader "TextMeshPro/3D/Unlit"
 					{
 						return o;
 					}
+					#endif
 
 					clip(bound);
 

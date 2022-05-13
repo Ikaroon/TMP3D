@@ -12,8 +12,8 @@ float InverseLerp(float a, float b, float x)
 float SampleSDF3D(float3 mask3D, tmp3d_g2f input)
 {
 	float2 maskUV = float2(0, 0);
-	maskUV.x = saturate(lerp(input.boundariesUV.x, input.boundariesUV.z, mask3D.x));
-	maskUV.y = saturate(lerp(input.boundariesUV.y, input.boundariesUV.w, mask3D.y));
+	maskUV.x = saturate(lerp(input.boundariesUV.x, input.boundariesUV.x + input.boundariesUV.z, mask3D.x));
+	maskUV.y = saturate(lerp(input.boundariesUV.y, input.boundariesUV.y + input.boundariesUV.w, mask3D.y));
 	return tex2D(_MainTex, maskUV).a;
 }
 
@@ -34,16 +34,17 @@ void ClipBounds(float3 mask3D)
 
 float3 PositionToMask(float3 localPos, tmp3d_g2f input)
 {
-	float3 mask3D = float3(-1,-1,-1);
-	mask3D.x = InverseLerp(input.boundariesLocal.x, input.boundariesLocal.z, localPos.x);
-	mask3D.y = InverseLerp(input.boundariesLocal.y, input.boundariesLocal.w, localPos.y);
+	float3 mask3D = float3(-1, -1, -1);
+	mask3D.y = InverseLerp(input.boundariesLocal.y, input.boundariesLocal.y + input.boundariesLocal.w, localPos.y);
+	float xOffset = saturate(mask3D.y) * input.boundariesLocalZ.z;
+	mask3D.x = InverseLerp(input.boundariesLocal.x, input.boundariesLocal.x + input.boundariesLocal.z, localPos.x - xOffset);
 	mask3D.z = InverseLerp(input.boundariesLocalZ.x, input.boundariesLocalZ.y, localPos.z);
 	return mask3D;
 }
 
 float GradientToLocalLength(tmp3d_g2f input)
 {
-	float l = abs(input.boundariesLocal.x - input.boundariesLocal.z);
+	float l = input.boundariesLocal.z;
 	return l * 0.01 * _GradientScale;
 }
 
@@ -62,7 +63,7 @@ tmp3d_v2g TMP3D_VERT(tmp3d_a2v input)
 }
 
 // "Creates a vertex" with an offset and boundary values
-tmp3d_g2f CreateVertex(tmp3d_v2g input, float3 positionOffset, float4 boundariesUV, float4 boundariesLocal, float2 boundariesLocalZ)
+tmp3d_g2f CreateVertex(tmp3d_v2g input, float3 positionOffset, float4 boundariesUV, float4 boundariesLocal, float4 boundariesLocalZ)
 {
 	tmp3d_g2f output;
 
@@ -92,7 +93,7 @@ tmp3d_g2f CreateVertex(tmp3d_v2g input, float3 positionOffset, float4 boundaries
 	return output;
 }
 
-void TMP3D_FILLGEOMETRY(triangle tmp3d_v2g input[3], inout TriangleStream<tmp3d_g2f> triStream, float3 def, float3 normal, float4 boundariesUV, float4 boundariesLocal, float2 boundariesLocalZ)
+void TMP3D_FILLGEOMETRY(triangle tmp3d_v2g input[3], inout TriangleStream<tmp3d_g2f> triStream, float3 def, float3 normal, float4 boundariesUV, float4 boundariesLocal, float4 boundariesLocalZ)
 {
 	// Top
 	triStream.RestartStrip();
@@ -131,7 +132,7 @@ void TMP3D_FILLGEOMETRY(triangle tmp3d_v2g input[3], inout TriangleStream<tmp3d_
 	// Side C is in between of the quad's triangles and not wanted
 }
 
-void TMP3D_FILLGEOMETRY_INVERTED(triangle tmp3d_v2g input[3], inout TriangleStream<tmp3d_g2f> triStream, float3 def, float3 normal, float4 boundariesUV, float4 boundariesLocal, float2 boundariesLocalZ)
+void TMP3D_FILLGEOMETRY_INVERTED(triangle tmp3d_v2g input[3], inout TriangleStream<tmp3d_g2f> triStream, float3 def, float3 normal, float4 boundariesUV, float4 boundariesLocal, float4 boundariesLocalZ)
 {
 	// Top
 	triStream.RestartStrip();
@@ -180,25 +181,25 @@ void TMP3D_GEOM(triangle tmp3d_v2g input[3], inout TriangleStream<tmp3d_g2f> tri
 	float depth = input[0].texcoord2.r;
 	float3 normal = input[0].normal * depth;
 
-	float minUVx = min(input[0].texcoord0.x, min(input[1].texcoord0.x, input[2].texcoord0.x));
-	float minUVy = min(input[0].texcoord0.y, min(input[1].texcoord0.y, input[2].texcoord0.y));
-	float maxUVx = max(input[0].texcoord0.x, max(input[1].texcoord0.x, input[2].texcoord0.x));
-	float maxUVy = max(input[0].texcoord0.y, max(input[1].texcoord0.y, input[2].texcoord0.y));
-	float4 boundariesUV = float4(minUVx, minUVy, maxUVx, maxUVy);
+	float skewUV = abs(input[1].texcoord0.x - input[0].texcoord0.x);
+	float widthUV = abs(input[2].texcoord0.x - input[1].texcoord0.x);
+	float heightUV = abs(input[1].texcoord0.y - input[0].texcoord0.y);
+	float xUV = min(input[0].texcoord0.x, input[2].texcoord0.x);
+	float yUV = min(input[0].texcoord0.y, input[1].texcoord0.y);
+	float4 boundariesUV = float4(xUV, yUV, widthUV, heightUV);
 
 	float3 v0local = mul(unity_WorldToObject, float4(input[0].position.xyz, 1)).xyz;
 	float3 v1local = mul(unity_WorldToObject, float4(input[1].position.xyz, 1)).xyz;
 	float3 v2local = mul(unity_WorldToObject, float4(input[2].position.xyz, 1)).xyz;
 
-	float minWorldx = min(v0local.x, min(v1local.x, v2local.x));
-	float minWorldy = min(v0local.y, min(v1local.y, v2local.y));
-	float maxWorldx = max(v0local.x, max(v1local.x, v2local.x));
-	float maxWorldy = max(v0local.y, max(v1local.y, v2local.y));
-	float4 boundariesLocal = float4(minWorldx, minWorldy, maxWorldx, maxWorldy);
+	float skewLocal = abs(v1local.x - v0local.x);
+	float widthLocal = abs(v2local.x - v1local.x);
+	float heightLocal = abs(v1local.y - v0local.y);
+	float xLocal = min(v0local.x, v2local.x);
+	float yLocal = min(v0local.y, v1local.y);
+	float4 boundariesLocal = float4(xLocal, yLocal, widthLocal, heightLocal);
 
-	float minWorldz = min(v0local.z, min(v1local.z, v2local.z));
-	float maxWorldz = max(v0local.z, max(v1local.z, v2local.z));
-	float2 boundariesLocalZ = float2(minWorldz - depth, maxWorldz);
+	float4 boundariesLocalZ = float4(-depth, 0, skewLocal, skewUV);
 
 	TMP3D_FILLGEOMETRY(input, triStream, def, normal, boundariesUV, boundariesLocal, boundariesLocalZ);
 }
@@ -213,25 +214,25 @@ void TMP3D_GEOM_INVERTED(triangle tmp3d_v2g input[3], inout TriangleStream<tmp3d
 	float depth = input[0].texcoord2.r;
 	float3 normal = input[0].normal * depth;
 
-	float minUVx = min(input[0].texcoord0.x, min(input[1].texcoord0.x, input[2].texcoord0.x));
-	float minUVy = min(input[0].texcoord0.y, min(input[1].texcoord0.y, input[2].texcoord0.y));
-	float maxUVx = max(input[0].texcoord0.x, max(input[1].texcoord0.x, input[2].texcoord0.x));
-	float maxUVy = max(input[0].texcoord0.y, max(input[1].texcoord0.y, input[2].texcoord0.y));
-	float4 boundariesUV = float4(minUVx, minUVy, maxUVx, maxUVy);
+	float skewUV = abs(input[1].texcoord0.x - input[0].texcoord0.x);
+	float widthUV = abs(input[2].texcoord0.x - input[1].texcoord0.x);
+	float heightUV = abs(input[1].texcoord0.y - input[0].texcoord0.y);
+	float xUV = min(input[0].texcoord0.x, input[2].texcoord0.x);
+	float yUV = min(input[0].texcoord0.y, input[1].texcoord0.y);
+	float4 boundariesUV = float4(xUV, yUV, widthUV, heightUV);
 
 	float3 v0local = mul(unity_WorldToObject, float4(input[0].position.xyz, 1)).xyz;
 	float3 v1local = mul(unity_WorldToObject, float4(input[1].position.xyz, 1)).xyz;
 	float3 v2local = mul(unity_WorldToObject, float4(input[2].position.xyz, 1)).xyz;
 
-	float minWorldx = min(v0local.x, min(v1local.x, v2local.x));
-	float minWorldy = min(v0local.y, min(v1local.y, v2local.y));
-	float maxWorldx = max(v0local.x, max(v1local.x, v2local.x));
-	float maxWorldy = max(v0local.y, max(v1local.y, v2local.y));
-	float4 boundariesLocal = float4(minWorldx, minWorldy, maxWorldx, maxWorldy);
+	float skewLocal = abs(v1local.x - v0local.x);
+	float widthLocal = abs(v2local.x - v1local.x);
+	float heightLocal = abs(v1local.y - v0local.y);
+	float xLocal = min(v0local.x, v2local.x);
+	float yLocal = min(v0local.y, v1local.y);
+	float4 boundariesLocal = float4(xLocal, yLocal, widthLocal, heightLocal);
 
-	float minWorldz = min(v0local.z, min(v1local.z, v2local.z));
-	float maxWorldz = max(v0local.z, max(v1local.z, v2local.z));
-	float2 boundariesLocalZ = float2(minWorldz - depth, maxWorldz);
+	float4 boundariesLocalZ = float4(-depth, 0, skewLocal, skewUV);
 
 	TMP3D_FILLGEOMETRY_INVERTED(input, triStream, def, normal, boundariesUV, boundariesLocal, boundariesLocalZ);
 }
