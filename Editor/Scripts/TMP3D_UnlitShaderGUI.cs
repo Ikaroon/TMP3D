@@ -56,18 +56,18 @@ namespace Ikaroon.TMP3DEditor
 
 			EndPanel();
 
-			s_outline = BeginPanel("Outline", s_outlineFeature, s_outline);
-			if (s_outline)
-			{
-				DoOutlinePanel();
-			}
-
-			EndPanel();
-
 			s_3D = BeginPanel("3D", s_3D);
 			if (s_3D)
 			{
 				Do3DPanel();
+			}
+
+			EndPanel();
+
+			s_outline = BeginPanel("Outline", s_outlineFeature, s_outline);
+			if (s_outline)
+			{
+				DoOutlinePanel();
 			}
 
 			EndPanel();
