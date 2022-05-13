@@ -8,6 +8,7 @@ All notable changes to this project will be documented in this file.
 - Custom Shader GUI for easier material editing
 - Raymarching options for more control
 - Support for more raymarching algorithms for the future
+- Debug options to show used steps and the 3D uvs
 
 ### Changed
 - Raymarching usage for more control and new algorithms in the future

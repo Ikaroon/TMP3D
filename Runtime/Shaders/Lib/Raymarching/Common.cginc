@@ -8,6 +8,30 @@
 float3 Temp_ViewDir;
 float3 Temp_LocalStartPos;
 
+float3 Temp_LocalPos;
+float3 GetRaymarchLocalPos()
+{
+	return Temp_LocalPos;
+}
+
+float Temp_Bound;
+float GetRaymarchBound()
+{
+	return Temp_Bound;
+}
+
+float Temp_Value;
+float GetRaymarchValue()
+{
+	return Temp_Value;
+}
+
+float3 Temp_Mask3D;
+float3 GetRaymarchMask3D()
+{
+	return Temp_Mask3D;
+}
+
 void PrepareTMP3DRaymarch(tmp3d_g2f input)
 {
 	float3 viewDir = normalize(input.worldPos.xyz - _WorldSpaceCameraPos.xyz);

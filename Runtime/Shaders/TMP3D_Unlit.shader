@@ -58,6 +58,7 @@ Shader "TextMeshPro/3D/Unlit"
 			#pragma multi_compile __ OUTLINE_ON
 			#pragma multi_compile _RAYMARCHER_STANDARD _RAYMARCHER_PENALTY
 			#pragma multi_compile _MAXSTEPS_32 _MAXSTEPS_64 _MAXSTEPS_96 _MAXSTEPS_128
+			#pragma multi_compile __ DEBUG_STEPS DEBUG_MASK
 
 			#pragma require geometry
 
@@ -107,6 +108,17 @@ Shader "TextMeshPro/3D/Unlit"
 				#endif
 			}
 
+			fragOutput ValidateOutput(fragOutput output, int step)
+			{
+				#if DEBUG_STEPS
+				float stepDensity = (float)step / (float)MAX_STEPS;
+				output.color = float4(stepDensity.x, 0, 0, 1);
+				#elif DEBUG_MASK
+				output.color = float4(GetRaymarchMask3D().xyz, 1);
+				#endif
+				return output;
+			}
+
 			fragOutput TMP3D_FRAG_UNLIT(tmp3d_g2f input)
 			{
 				UNITY_SETUP_INSTANCE_ID(input);
@@ -124,17 +136,18 @@ Shader "TextMeshPro/3D/Unlit"
 
 				InitializeRaymarcher(input);
 
-				for (int i = 0; i < MAX_STEPS; i++)
+				for (int i = 0; i <= MAX_STEPS; i++)
 				{
-					float3 localPos;
-					float bound;
-					float value;
 
 					float offset = edge;
 					#if OUTLINE_ON
 					offset += lerp(_OutlineWidth, 0, outline);
 					#endif
-					NextRaymarch(localPos, bound, value, offset);
+					NextRaymarch(offset);
+					float3 localPos = GetRaymarchLocalPos();
+					float bound = GetRaymarchBound();
+					float value = GetRaymarchValue();
+					float3 mask3D = GetRaymarchMask3D();
 
 					#if OUTLINE_ON
 					if (value <= edge + _OutlineWidth)
@@ -146,7 +159,7 @@ Shader "TextMeshPro/3D/Unlit"
 
 					if (bound < 0 && outline > 0.5)
 					{
-						return o;
+						return ValidateOutput(o, i);
 					}
 					#endif
 
@@ -161,11 +174,11 @@ Shader "TextMeshPro/3D/Unlit"
 
 						o.depth = compute_depth(UnityObjectToClipPos(localPos));
 						o.color = float4(c.rgb * input.color, 1);
-						return o;
+						return ValidateOutput(o, i);
 					}
 				}
 
-				return o;
+				return ValidateOutput(o, MAX_STEPS);
 			}
 
 			ENDCG
