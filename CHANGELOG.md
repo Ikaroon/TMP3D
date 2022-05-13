@@ -1,7 +1,7 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
-## [Unreleased]
+## [v0.1.0] - 2022-05-13
 ### Added
 - Support for bold text rendering
 - Support for italic text rendering
