@@ -29,7 +29,7 @@ struct tmp3d_g2f {
 	float4	worldPos			: TEXCOORD1;
 	float4	boundariesUV		: TEXCOORD2;
 	float4	boundariesLocal		: TEXCOORD3;
-	float2	boundariesLocalZ	: TEXCOORD4;
+	float4	boundariesLocalZ	: TEXCOORD4;
 	float4	tmp3d				: TEXCOORD5;
 	float2	tmp					: TEXCOORD6;
 };

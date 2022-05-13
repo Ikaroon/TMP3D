@@ -11,6 +11,7 @@ namespace Ikaroon.TMP3DEditor
 		static TMP3D_ShaderFeature s_volumeModeFeature;
 		static TMP3D_ShaderFeature s_raymarchModeFeature;
 		static TMP3D_ShaderFeature s_maxStepsFeature;
+		static ShaderFeature s_debugFeature;
 
 		static bool s_general = true;
 		static bool s_outline = true;
@@ -44,6 +45,13 @@ namespace Ikaroon.TMP3DEditor
 				keywords = new[] { "_MAXSTEPS_32", "_MAXSTEPS_64", "_MAXSTEPS_96", "_MAXSTEPS_128" },
 				keywordLabels = new[] { new GUIContent("32"), new GUIContent("64"), new GUIContent("96"), new GUIContent("128") }
 			};
+			s_debugFeature = new ShaderFeature()
+			{
+				undoLabel = "Debug",
+				label = new GUIContent("Debug Mode"),
+				keywords = new[] { "DEBUG_STEPS", "DEBUG_MASK" },
+				keywordLabels = new[] { new GUIContent("None"), new GUIContent("Steps"), new GUIContent("Mask") }
+			};
 		}
 
 		protected override void DoGUI()
@@ -56,18 +64,18 @@ namespace Ikaroon.TMP3DEditor
 
 			EndPanel();
 
-			s_outline = BeginPanel("Outline", s_outlineFeature, s_outline);
-			if (s_outline)
-			{
-				DoOutlinePanel();
-			}
-
-			EndPanel();
-
 			s_3D = BeginPanel("3D", s_3D);
 			if (s_3D)
 			{
 				Do3DPanel();
+			}
+
+			EndPanel();
+
+			s_outline = BeginPanel("Outline", s_outlineFeature, s_outline);
+			if (s_outline)
+			{
+				DoOutlinePanel();
 			}
 
 			EndPanel();
@@ -129,6 +137,8 @@ namespace Ikaroon.TMP3DEditor
 			DoFloat("_GradientScale", "Gradient Scale");
 			DoFloat("_TextureWidth", "Texture Width");
 			DoFloat("_TextureHeight", "Texture Height");
+			s_debugFeature.ReadState(m_Material);
+			s_debugFeature.DoPopup(m_Editor, m_Material);
 			EditorGUI.indentLevel -= 1;
 			EditorGUILayout.Space();
 		}

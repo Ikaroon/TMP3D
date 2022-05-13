@@ -1,15 +1,19 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
-## [Unreleased]
+## [v0.1.0] - 2022-05-13
 ### Added
 - Support for bold text rendering
+- Support for italic text rendering
 - Custom Shader GUI for easier material editing
 - Raymarching options for more control
 - Support for more raymarching algorithms for the future
+- Debug options to show used steps and the 3D uvs
 
 ### Changed
 - Raymarching usage for more control and new algorithms in the future
+- Boundaries structure for raymarching
+- Outline rendering is now a shader feature and can be fully disabled
 
 ### Removed
 - Unused shader uniforms
