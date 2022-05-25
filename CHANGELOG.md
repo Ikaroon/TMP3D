@@ -1,6 +1,13 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [Unreleased]
+### Added
+- Simple Raymarcher
+
+### Changed
+- Renamed Standard Raymarcher to SDF Raymarcher
+
 ## [v0.1.0] - 2022-05-13
 ### Added
 - Support for bold text rendering

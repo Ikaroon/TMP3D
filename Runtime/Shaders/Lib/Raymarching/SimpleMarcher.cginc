@@ -1,10 +1,12 @@
-#ifndef RAYMARCHING_STANDARDMARCHER_CG_INCLUDED
-#define RAYMARCHING_STANDARDMARCHER_CG_INCLUDED
+#ifndef RAYMARCHING_SIMPLEMARCHER_CG_INCLUDED
+#define RAYMARCHING_SIMPLEMARCHER_CG_INCLUDED
 
 #include "Common.cginc"
 
 float temp_Progress;
 tmp3d_g2f temp_Input;
+
+float _RaymarchStepLength;
 
 void InitializeRaymarcher(tmp3d_g2f input)
 {
@@ -21,15 +23,7 @@ void NextRaymarch(float offset)
 	Temp_Bound = IsInBounds(Temp_Mask3D);
 	Temp_Value = 1 - SampleSDF3D(saturate(Temp_Mask3D), temp_Input);
 
-	float sdfDistance = max((Temp_Value - offset) * GradientToLocalLength(temp_Input), _RaymarchMinStep);
-	float3 viewDir = GetRaymarchLocalDirection();
-	float length1 = length(normalize(viewDir.xy) * sdfDistance);
-	float length2 = length(viewDir.xy);
-
-	float ratio = length1 / length2;
-	viewDir *= ratio;
-
-	temp_Progress += length(viewDir);
+	temp_Progress += _RaymarchStepLength;
 }
 
 #endif

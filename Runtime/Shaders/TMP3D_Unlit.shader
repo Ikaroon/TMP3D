@@ -1,5 +1,3 @@
-// Upgrade NOTE: replaced 'mul(UNITY_MATRIX_MVP,*)' with 'UnityObjectToClipPos(*)'
-
 Shader "TextMeshPro/3D/Unlit"
 {
 	Properties
@@ -11,6 +9,7 @@ Shader "TextMeshPro/3D/Unlit"
 
 		// 3D
 		_RaymarchMinStep("Raymarch min step", Range(0.001, 0.01)) = 0.001
+		_RaymarchStepLength("Raymarch step length", Range(0.001, 1)) = 0.1
 		_DepthAlbedo("Depth Albedo", 2D) = "white" {}
 
 		// Outline
@@ -56,7 +55,7 @@ Shader "TextMeshPro/3D/Unlit"
 			#pragma fragment TMP3D_FRAG_UNLIT
 
 			#pragma multi_compile __ OUTLINE_ON
-			#pragma multi_compile _RAYMARCHER_STANDARD _RAYMARCHER_PENALTY
+			#pragma multi_compile _RAYMARCHER_SDF _RAYMARCHER_SIMPLE
 			#pragma multi_compile _MAXSTEPS_32 _MAXSTEPS_64 _MAXSTEPS_96 _MAXSTEPS_128
 			#pragma multi_compile __ DEBUG_STEPS DEBUG_MASK
 
@@ -65,10 +64,10 @@ Shader "TextMeshPro/3D/Unlit"
 			#include "UnityCG.cginc"
 			#include "Lib/TMP3D_Common.cginc"
 
-			#if _RAYMARCHER_STANDARD
-			#include "Lib/Raymarching/StandardMarcher.cginc"
-			#elif _RAYMARCHER_PENALTY
-			#include "Lib/Raymarching/PenaltyMarcher.cginc"
+			#if _RAYMARCHER_SDF
+			#include "Lib/Raymarching/SDFMarcher.cginc"
+			#elif _RAYMARCHER_SIMPLE
+			#include "Lib/Raymarching/SimpleMarcher.cginc"
 			#endif
 
 			#if _MAXSTEPS_32

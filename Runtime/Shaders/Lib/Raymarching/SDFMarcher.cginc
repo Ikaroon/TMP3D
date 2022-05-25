@@ -1,12 +1,12 @@
-#ifndef RAYMARCHING_PENALTYMARCHER_CG_INCLUDED
-#define RAYMARCHING_PENALTYMARCHER_CG_INCLUDED
-
-// Currently this raymarcher is identical to the standard raymarcher but this lays the ground for future alternatives
+#ifndef RAYMARCHING_SDFMARCHER_CG_INCLUDED
+#define RAYMARCHING_SDFMARCHER_CG_INCLUDED
 
 #include "Common.cginc"
 
 float temp_Progress;
 tmp3d_g2f temp_Input;
+
+float _RaymarchMinStep;
 
 void InitializeRaymarcher(tmp3d_g2f input)
 {
