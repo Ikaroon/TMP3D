@@ -8,6 +8,9 @@ All notable changes to this project will be documented in this file.
 ### Changed
 - Renamed Standard Raymarcher to SDF Raymarcher
 
+### Fixed
+- Fix ArgumentOutOfRangeException when text is empty
+
 ## [v0.1.0] - 2022-05-13
 ### Added
 - Support for bold text rendering

@@ -38,12 +38,14 @@ namespace Ikaroon.TMP3D
 			if (m_tmp.textInfo == null)
 				return;
 
-			for (int i = m_tmp.textInfo.characterCount - 1; i < m_tmp3DCharacters.Count; i++)
+			// Remove old characters from 3D data
+			for (int i = m_tmp3DCharacters.Count - 1; i >= m_tmp.textInfo.characterCount; i--)
 			{
 				m_tmp3DCharacters.RemoveAt(i);
 			}
 
-			for (int i = m_tmp3DCharacters.Count - 1; i < m_tmp.textInfo.characterCount; i++)
+			// Add new characters to 3D data
+			for (int i = m_tmp3DCharacters.Count; i < m_tmp.textInfo.characterCount; i++)
 			{
 				m_tmp3DCharacters.Add(new TMP3D_CharacterInfo(m_defaultDepth, new Vector2(0, 1)));
 			}
