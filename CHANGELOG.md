@@ -10,6 +10,8 @@ All notable changes to this project will be documented in this file.
 
 ### Fixed
 - Fix ArgumentOutOfRangeException when text is empty
+- Fix "Full" raymarch mode creates slits in geometry
+- Fix "Full" raymarch mode does not support italic text
 
 ## [v0.1.0] - 2022-05-13
 ### Added

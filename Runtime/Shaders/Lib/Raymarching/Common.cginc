@@ -41,62 +41,55 @@ void PrepareTMP3DRaymarch(tmp3d_g2f input)
 	Temp_ViewDir = mul((float3x3)unity_WorldToObject, viewDir);
 }
 
-float3 ProjectRayOntoPlane(float3 origin, float3 direction, float3 normal, float distance)
+float ProjectRayOntoPlane(float3 rayOrigin, float3 rayDirection, float3 planeNormal, float3 planeOrigin)
 {
-	float denom = dot(normal, direction);
+	float denom = dot(planeNormal, rayDirection);
 
 	if (abs(denom) <= 1e-3)
-		return 0;
+		return -1000;
 
-	float t = -(dot(normal, origin) + distance) / dot(normal, direction);
+	float t = dot(planeOrigin - rayOrigin, planeNormal) / denom;
 
 	if (t <= 1e-3)
-		return 0;
+		return -1000;
 
-	return t * direction;
+	return t;
 }
 
 void PrepareTMP3DRaymarchInverted(tmp3d_g2f input)
 {
 	PrepareTMP3DRaymarch(input);
 
-	float3 negViewDir = -Temp_ViewDir;
-	float3 x = ProjectRayOntoPlane(Temp_LocalStartPos, negViewDir, float3(-1, 0, 0), input.boundariesLocal.x);
-	x += ProjectRayOntoPlane(Temp_LocalStartPos, negViewDir, float3(-1, 0, 0), input.boundariesLocal.z);
+	float3 up = normalize(float3(input.boundariesLocalZ.z, input.boundariesLocal.w, 0));
+	float3 side = normalize(cross(up, float3(0,0,1)));
+	
+	float back = input.boundariesLocalZ.x;
+	float front = input.boundariesLocalZ.y;
 
-	float3 y = ProjectRayOntoPlane(Temp_LocalStartPos, negViewDir, float3(0, -1, 0), input.boundariesLocal.y);
-	y += ProjectRayOntoPlane(Temp_LocalStartPos, negViewDir, float3(0, -1, 0), input.boundariesLocal.w);
+	float bottom = input.boundariesLocal.y;
+	float top = bottom + input.boundariesLocal.w;
 
-	float3 z = ProjectRayOntoPlane(Temp_LocalStartPos, negViewDir, float3(0, 0, -1), input.boundariesLocalZ.x);
-	z += ProjectRayOntoPlane(Temp_LocalStartPos, negViewDir, float3(0, 0, -1), input.boundariesLocalZ.y);
+	float left = input.boundariesLocal.x;
+	float right = left + input.boundariesLocal.z;
 
-	float3 c = mul((float3x3)unity_WorldToObject, _WorldSpaceCameraPos.xyz - input.worldPos.xyz);
+	float3 negViewDir = normalize(-Temp_ViewDir);
 
-	float xL = length(x);
-	float yL = length(y);
-	float zL = length(z);
-	float cL = length(c);
+	float xL = ProjectRayOntoPlane(Temp_LocalStartPos, negViewDir, side, float3(left, bottom, 0));
+	float xR = ProjectRayOntoPlane(Temp_LocalStartPos, negViewDir, side, float3(right, bottom, 0));
+	float x = abs(max(xL, xR));
+	
+	float yB = ProjectRayOntoPlane(Temp_LocalStartPos, negViewDir, float3(0, 1, 0), float3(0, bottom, 0));
+	float yT = ProjectRayOntoPlane(Temp_LocalStartPos, negViewDir, float3(0, 1, 0), float3(0, top, 0));
+	float y = abs(max(yB, yT));
 
-	// TODO: This is majorly ugly...
-	if (cL <= xL && cL <= yL && cL <= zL)
-	{
-		Temp_LocalStartPos += c;
-		return;
-	}
+	float zB = ProjectRayOntoPlane(Temp_LocalStartPos, negViewDir, float3(0, 0, 1), float3(0,0,back));
+	float zF = ProjectRayOntoPlane(Temp_LocalStartPos, negViewDir, float3(0, 0, 1), float3(0,0,front));
+	float z = abs(max(zB, zF));
 
-	if (xL <= yL && xL <= zL)
-	{
-		Temp_LocalStartPos += x;
-		return;
-	}
+	float c = length(mul((float3x3)unity_WorldToObject, _WorldSpaceCameraPos.xyz - input.worldPos.xyz));
 
-	if (yL <= zL)
-	{
-		Temp_LocalStartPos += y;
-		return;
-	}
-
-	Temp_LocalStartPos += z;
+	float dist = min(c, min(x, min(y, z)));
+	Temp_LocalStartPos += negViewDir * dist;
 }
 
 float3 GetRaymarchLocalPosition(float progress)
