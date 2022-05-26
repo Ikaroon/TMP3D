@@ -4,6 +4,8 @@ All notable changes to this project will be documented in this file.
 ## [Unreleased]
 ### Added
 - Simple Raymarcher
+- One click creation of TMP3D GameObject
+- Font Asset conversion via the TMP3D_Handler
 
 ### Changed
 - Renamed Standard Raymarcher to SDF Raymarcher

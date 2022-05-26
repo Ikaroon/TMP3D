@@ -1,7 +1,6 @@
 ﻿using UnityEngine;
 using UnityEditor;
 using TMPro.EditorUtilities;
-using TMPro;
 
 namespace Ikaroon.TMP3DEditor
 {
