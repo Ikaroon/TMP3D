@@ -1,6 +1,21 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [v0.1.1] - 2022-05-27
+### Added
+- Simple Raymarcher
+- Temporal Raymarcher optimized for Temporal Antialiasing
+- One click creation of TMP3D GameObject
+- Font Asset conversion via the TMP3D_Handler
+
+### Changed
+- Renamed Standard Raymarcher to SDF Raymarcher
+
+### Fixed
+- Fix ArgumentOutOfRangeException when text is empty
+- Fix "Full" raymarch mode creates slits in geometry
+- Fix "Full" raymarch mode does not support italic text
+
 ## [v0.1.0] - 2022-05-13
 ### Added
 - Support for bold text rendering

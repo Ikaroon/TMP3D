@@ -1,6 +1,6 @@
 {
   "name": "com.ikaroon.tmp3d",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "displayName": "Text Mesh Pro 3D Support",
   "description": "An extension for Text Mesh Pro that makes 3D text possible using shaders.",
   "unity": "2020.3",

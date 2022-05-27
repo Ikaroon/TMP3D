@@ -8,7 +8,6 @@ uniform float 		_WeightNormal;
 
 // 3D
 sampler2D _DepthAlbedo;
-float _RaymarchMinStep;
 
 // Outline
 uniform fixed4		_OutlineColor;
