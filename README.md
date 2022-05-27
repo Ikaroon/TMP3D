@@ -14,7 +14,13 @@ An extension for Text Mesh Pro that makes 3D text possible using shaders.
 - [x] Bold text support
 - [x] Italic text support
 - [x] Debug rendering
+  - Steps: Showing shader complexity
+  - Mask: 3D uvs
 - [x] Text Creation Helper
+- [x] Multiple Raymarching Algorithms
+  - Simple: Equal sized steps
+  - Temporal: Optimized for Temporal Antialiasing
+  - SDF: Using TextMeshPro's distance values
 - [ ] Strikethrough text support
 - [ ] Underline text support
 - [ ] Solid, surface shader
