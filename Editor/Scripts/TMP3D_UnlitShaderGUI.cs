@@ -34,8 +34,8 @@ namespace Ikaroon.TMP3DEditor
 			{
 				undoLabel = "RaymarchMode",
 				label = new GUIContent("Raymarch Mode"),
-				keywords = new[] { "_RAYMARCHER_SDF", "_RAYMARCHER_SIMPLE" },
-				keywordLabels = new[] { new GUIContent("Signed Distance Field"), new GUIContent("Simple") }
+				keywords = new[] { "_RAYMARCHER_SDF", "_RAYMARCHER_SIMPLE", "_RAYMARCHER_TEMPORAL" },
+				keywordLabels = new[] { new GUIContent("Signed Distance Field"), new GUIContent("Simple"), new GUIContent("Temporal") }
 			};
 			s_maxStepsFeature = new TMP3D_ShaderFeature()
 			{
@@ -129,6 +129,16 @@ namespace Ikaroon.TMP3DEditor
 					break;
 				case 1:
 					DoSlider("_RaymarchStepLength", "Step Length");
+					break;
+				case 2:
+					DoSlider("_RaymarchStepLength", "Step Length");
+					var texture = m_Editor.TextureProperty(FindProperty("_RaymarchBlueNoise", m_Properties), "Blue Noise", false) as Texture2DArray;
+					if (texture != null)
+					{
+						FindProperty("_RaymarchBlueNoise_Slices", m_Properties).floatValue = texture.depth;
+					}
+					DoFloat("_RaymarchBlueNoise_Speed", "Blue Noise Speed");
+					DoFloat("_RaymarchBlueNoise_Offset", "Blue Noise Offset");
 					break;
 			}
 			DoTexture2D("_DepthAlbedo", "Depth Albedo");

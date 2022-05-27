@@ -4,6 +4,7 @@ All notable changes to this project will be documented in this file.
 ## [Unreleased]
 ### Added
 - Simple Raymarcher
+- Temporal Raymarcher optimized for Temporal Antialiasing
 - One click creation of TMP3D GameObject
 - Font Asset conversion via the TMP3D_Handler
 
