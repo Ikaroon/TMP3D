@@ -5,7 +5,7 @@
 <img alt="GitHub (Pre-)Release Date" src="https://img.shields.io/github/release-date-pre/Ikaroon/TMP3D"></p>
 
 # Text Mesh Pro 3D
-An extension for Text Mesh Pro that makes 3D text possible using shaders.
+This is a small extension that makes 3D text with Unity's TextMeshPro possible. It uses raymarching and a geometry shader to work around the limitations of TMP at the moment.
 
 ## Features
 - [x] Solid, unlit shader (3D)
@@ -84,6 +84,10 @@ If you still need help, here are some steps how you setup a TextMeshPro for 3D:
 
 ## Notice
 Work on this project happens in my freetime and, therefore, I cannot promise if and when certain features are added. I am considering to open this up for contribution but for now you can manipulate the code as you please. This project is MIT licensed and may be used freely. (Check the license file for more information)
+
+## Bugs
+When you find a bug you can [create a bug report](https://github.com/Ikaroon/TMP3D/issues/new/choose) on Github!
+I will try to cover them as quickly as possible.
 
 ## Donation
 If this project helped you, you can treat me to a coffee if you want :coffee:
