@@ -146,6 +146,7 @@ namespace Ikaroon.TMP3DEditor
 			DoColor("_Color", "Color");
 			DoSlider("_WeightBold", "Weight Bold");
 			DoSlider("_WeightNormal", "Weight Normal");
+			DoTexture2D("_FaceTex", "Face Texture", true);
 
 			EditorGUI.indentLevel -= 1;
 			EditorGUILayout.Space();

@@ -1,6 +1,13 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [Unreleased]
+### Added
+- Support for face texture rendering
+
+### Changed
+- Improved Temporal Raymarcher quality
+
 ## [v0.1.1] - 2022-05-27
 ### Added
 - Simple Raymarcher

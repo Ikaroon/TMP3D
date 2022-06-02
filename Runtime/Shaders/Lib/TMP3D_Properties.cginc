@@ -2,6 +2,7 @@
 #define TMP3D_PROPERTIES_CG_INCLUDED
 
 // General
+uniform sampler2D   _FaceTex;
 fixed4				_Color;
 uniform float		_WeightBold;
 uniform float 		_WeightNormal;

@@ -3,6 +3,7 @@ Shader "TextMeshPro/3D/Unlit"
 	Properties
 	{
 		// General
+		_FaceTex("Face Texture", 2D) = "white" {}
 		_Color("Color", Color) = (1,1,1,1)
 		_WeightBold("Weight Bold", Range(0,1)) = 0.6
 		_WeightNormal("Weight Normal", Range(0,1)) = 0.5
@@ -176,6 +177,8 @@ Shader "TextMeshPro/3D/Unlit"
 						float progress = saturate(InverseLerp(0, charDepth, depth));
 						progress = saturate(lerp(depthMapped.x, depthMapped.y, progress));
 						float3 c = tex2D(_DepthAlbedo, float2(progress, 0.5)) * _Color.rgb;
+						float3 face = tex2D(_FaceTex, mask3D.xy * _FaceTex_ST.xy - _FaceTex_ST.zw);
+						c *= face;
 
 						o.depth = compute_depth(UnityObjectToClipPos(localPos));
 						o.color = float4(c.rgb * input.color, 1);
