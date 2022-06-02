@@ -16,6 +16,8 @@ namespace Ikaroon.TMP3DEditor
 		static bool s_outline = true;
 		static bool s_3D = true;
 
+		protected static GUIContent s_tempLabel = new GUIContent();
+
 		static TMP3D_UnlitShaderGUI()
 		{
 			s_outlineFeature = new ShaderFeature()
@@ -51,6 +53,55 @@ namespace Ikaroon.TMP3DEditor
 				keywords = new[] { "DEBUG_STEPS", "DEBUG_MASK" },
 				keywordLabels = new[] { new GUIContent("None"), new GUIContent("Steps"), new GUIContent("Mask") }
 			};
+		}
+
+		protected MaterialProperty BeginProperty(string name)
+		{
+			MaterialProperty property = FindProperty(name, m_Properties);
+			EditorGUI.BeginChangeCheck();
+			EditorGUI.showMixedValue = property.hasMixedValue;
+			m_Editor.BeginAnimatedCheck(Rect.zero, property);
+
+			return property;
+		}
+
+		protected bool EndProperty()
+		{
+			m_Editor.EndAnimatedCheck();
+			EditorGUI.showMixedValue = false;
+			return EditorGUI.EndChangeCheck();
+		}
+
+		protected void DoMinMaxSlider(string property, string label, float minLimit, float maxLimit, int indexA, int indexB)
+		{
+			MaterialProperty prop = BeginProperty(property);
+			s_tempLabel.text = label;
+
+			var vector = prop.vectorValue;
+			var min = vector[indexA];
+			var max = vector[indexB];
+
+			float originalValue = EditorGUIUtility.labelWidth;
+			EditorGUIUtility.labelWidth = originalValue - 26;
+
+			EditorGUILayout.BeginHorizontal();
+			EditorGUILayout.PrefixLabel(s_tempLabel);
+			min = EditorGUILayout.FloatField(min, GUILayout.Width(100f));
+			EditorGUILayout.MinMaxSlider(ref min, ref max, minLimit, maxLimit);
+			max = EditorGUILayout.FloatField(max, GUILayout.Width(100f));
+			min = Mathf.Clamp(min, minLimit, max);
+			max = Mathf.Clamp(max, min, maxLimit);
+			EditorGUILayout.EndHorizontal();
+
+			EditorGUIUtility.labelWidth = originalValue;
+
+			if (EndProperty())
+			{
+				vector[indexA] = min;
+				vector[indexB] = max;
+				prop.vectorValue = vector;
+				m_Editor.RegisterPropertyChangeUndo(label);
+			}
 		}
 
 		protected override void DoGUI()
@@ -131,14 +182,13 @@ namespace Ikaroon.TMP3DEditor
 					DoSlider("_RaymarchStepLength", "Step Length");
 					break;
 				case 2:
-					DoSlider("_RaymarchStepLength", "Step Length");
+					DoMinMaxSlider("_RaymarchTemporalStepLength", "Step Length", 0, 1, 0, 1);
 					var texture = m_Editor.TextureProperty(FindProperty("_RaymarchBlueNoise", m_Properties), "Blue Noise", false) as Texture2DArray;
 					if (texture != null)
 					{
 						FindProperty("_RaymarchBlueNoise_Slices", m_Properties).floatValue = texture.depth;
 					}
 					DoFloat("_RaymarchBlueNoise_Speed", "Blue Noise Speed");
-					DoFloat("_RaymarchBlueNoise_Offset", "Blue Noise Offset");
 					break;
 			}
 			DoTexture2D("_DepthAlbedo", "Depth Albedo");

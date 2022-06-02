@@ -13,7 +13,7 @@ Shader "TextMeshPro/3D/Unlit"
 		_RaymarchBlueNoise("Raymarch Blue Noise", 2DArray) = "black" {}
 		_RaymarchBlueNoise_Slices("Raymarch Blue Noise Slices", float) = 1
 		_RaymarchBlueNoise_Speed("Raymarch Blue Noise Speed", float) = 10
-		_RaymarchBlueNoise_Offset("Raymarch Blue Noise Offset", float) = 0.01
+		_RaymarchTemporalStepLength("Raymarch Temporal Step Length", Vector) = (0.01, 0.05, 0, 0)
 		_DepthAlbedo("Depth Albedo", 2D) = "white" {}
 
 		// Outline

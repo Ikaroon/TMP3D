@@ -9,13 +9,12 @@ float Temp_Progress;
 tmp3d_g2f Temp_Input;
 float Temp_ActualStepLength;
 
-float _RaymarchStepLength;
+float2 _RaymarchTemporalStepLength;
 
 UNITY_DECLARE_TEX2DARRAY(_RaymarchBlueNoise);
 float4 _RaymarchBlueNoise_TexelSize;
 float _RaymarchBlueNoise_Slices;
 float _RaymarchBlueNoise_Speed;
-float _RaymarchBlueNoise_Offset;
 
 void InitializeRaymarcher(tmp3d_g2f input)
 {
@@ -25,9 +24,9 @@ void InitializeRaymarcher(tmp3d_g2f input)
 	float2 screenUV = screenPos.xy * _RaymarchBlueNoise_TexelSize.xy;
 
 	float offset = UNITY_SAMPLE_TEX2DARRAY(_RaymarchBlueNoise, float3(screenUV, (_Time.w * _RaymarchBlueNoise_Speed) % _RaymarchBlueNoise_Slices));
-	float localOffset = lerp(0, _RaymarchBlueNoise_Offset, offset);
+	float localOffset = lerp(_RaymarchTemporalStepLength.x, _RaymarchTemporalStepLength.y, offset);
 
-	Temp_ActualStepLength = localOffset * _RaymarchStepLength;
+	Temp_ActualStepLength = localOffset;
 
 	Temp_Progress = 0;
 	Temp_Input = input;
