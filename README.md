@@ -5,7 +5,7 @@
 <img alt="GitHub (Pre-)Release Date" src="https://img.shields.io/github/release-date-pre/Ikaroon/TMP3D"></p>
 
 # Text Mesh Pro 3D
-An extension for Text Mesh Pro that makes 3D text possible using shaders.
+This is a small extension that makes 3D text with Unity's TextMeshPro possible. It uses raymarching and a geometry shader to work around the limitations of TMP at the moment.
 
 ## Features
 - [x] Solid, unlit shader (3D)
@@ -73,17 +73,30 @@ To understand how to setup a TextMeshPro for 3D you can check out the sample in 
 4. Click `Import` next to `Solid Text`
 5. Now open the scene from `Assets/Samples/Text Mesh Pro 3D Support/<version>/Solid Text/Scenes/Sample_TMP3D`
 
-If you still need help, here are some steps how you setup a TextMeshPro for 3D:
-1. Create a new FontAsset by using the `Font Asset Creator` from `Window>Text Mesh Pro>Font Asset Creator`
-2. Expand the created Asset and select the Material
-3. Change the Material's shader to `TextMeshPro/3D/Unlit`
-4. Create a TextMeshPro in a scene from `3D Object>Text - TextMeshPro` **NOT** from `UI>Text - TextMeshPro` this is not supported yet.
-5. Add a TMP3D_Handler component from `Script>Ikaroon.TMP3D>TMP3D_Handler`
-6. Apply the FontAsset to the TextMeshPro component
-7. You have now access to 3D text!
+If you still need help, here are some steps how you setup a TextMeshPro for 3D.
+There are two ways of creating a TextMeshPro 3D.
+
+**The Automatic way:**
+  1. Create a TextMeshPro in a scene from `3D Object>Text - TextMeshPro (3D)`
+  2. Replace the FontAsset with another font
+  4. Click `Create 3D Font Asset Variant` if it's not a 3D font already (The button will be disabled otherwise)
+  5. You have now access to 3D text!
+
+**The Manual way:**
+  1. Create a new FontAsset by using the `Font Asset Creator` from `Window>Text Mesh Pro>Font Asset Creator`
+  2. Expand the created Asset and select the Material
+  3. Change the Material's shader to `TextMeshPro/3D/Unlit`
+  4. Create a TextMeshPro in a scene from `3D Object>Text - TextMeshPro` **NOT** from `UI>Text - TextMeshPro` this is not supported yet.
+  5. Add a TMP3D_Handler component from `Script>Ikaroon.TMP3D>TMP3D_Handler`
+  6. Apply the FontAsset to the TextMeshPro component
+  7. You have now access to 3D text!
 
 ## Notice
 Work on this project happens in my freetime and, therefore, I cannot promise if and when certain features are added. I am considering to open this up for contribution but for now you can manipulate the code as you please. This project is MIT licensed and may be used freely. (Check the license file for more information)
+
+## Bugs
+When you find a bug you can [create a bug report](https://github.com/Ikaroon/TMP3D/issues/new/choose) on Github!
+I will try to cover them as quickly as possible.
 
 ## Donation
 If this project helped you, you can treat me to a coffee if you want :coffee:
