@@ -59,9 +59,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 71c1514a6bd24e1e882cebbe1904ce04, type: 3}
   m_Name: LiberationSans SDF Temporal (3D)
   m_EditorClassIdentifier: 
-  hashCode: 190278789
+  hashCode: 2127962585
   material: {fileID: 4138950255756128119}
-  materialHashCode: 1167874821
+  materialHashCode: -2065034151
   m_Version: 1.1.0
   m_SourceFontFileGUID: d86a8c58476397848aef9528acef4649
   m_SourceFontFile_EditorRef: {fileID: 12800000, guid: d86a8c58476397848aef9528acef4649, type: 3}
