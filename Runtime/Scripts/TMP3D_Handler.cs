@@ -108,7 +108,7 @@ namespace Ikaroon.TMP3D
 					m_cachedMeshUVs[vertexIndex + 2] = tmp3DData;
 					m_cachedMeshUVs[vertexIndex + 3] = tmp3DData;
 
-					if (underlineIndex > -1)
+					if (underlineIndex != vertexIndex)
 					{
 						m_cachedMeshUVs[underlineIndex + 0] = tmp3DData;
 						m_cachedMeshUVs[underlineIndex + 1] = tmp3DData;
@@ -126,7 +126,7 @@ namespace Ikaroon.TMP3D
 						m_cachedMeshUVs[underlineIndex + 11] = tmp3DData;
 					}
 
-					if (strikethroughIndex > -1)
+					if (strikethroughIndex != vertexIndex)
 					{
 						m_cachedMeshUVs[strikethroughIndex + 0] = tmp3DData;
 						m_cachedMeshUVs[strikethroughIndex + 1] = tmp3DData;
