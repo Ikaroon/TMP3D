@@ -21,11 +21,12 @@ This is a small extension that makes 3D text with Unity's TextMeshPro possible. 
   - Simple: Equal sized steps
   - Temporal: Optimized for Temporal Antialiasing
   - SDF: Using TextMeshPro's distance values
-- [ ] Strikethrough text support
-- [ ] Underline text support
+- [x] Strikethrough text support
+- [x] Underline text support
+- [x] Face texture support
+- [x] Documentation
 - [ ] Solid, surface shader
 - [ ] Solid, unlit shader (UI)
-- [ ] Documentation
 - [ ] Sprite support
 
 ### In Evaluation
