@@ -9,7 +9,7 @@ Shader "TextMeshPro/3D/Unlit"
 		_WeightNormal("Weight Normal", Range(0,1)) = 0.5
 
 		// 3D
-		_RaymarchMinStep("Raymarch min step", Range(0.001, 0.01)) = 0.001
+		_RaymarchMinStep("Raymarch min step", Range(0.001, 0.1)) = 0.01
 		_RaymarchStepLength("Raymarch step length", Range(0.001, 1)) = 0.1
 		_RaymarchBlueNoise("Raymarch Blue Noise", 2DArray) = "black" {}
 		_RaymarchBlueNoise_Slices("Raymarch Blue Noise Slices", float) = 1

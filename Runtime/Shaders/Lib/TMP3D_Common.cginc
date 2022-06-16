@@ -45,7 +45,7 @@ float3 PositionToMask(float3 localPos, tmp3d_g2f input)
 float GradientToLocalLength(tmp3d_g2f input, float value, float offset)
 {
 	float gradientUV = _GradientScale / _TextureHeight;
-	float gradientRelative = gradientUV / (input.boundariesUV.w * 2);
+	float gradientRelative = gradientUV / input.boundariesUV.w;
 	float localM = input.boundariesLocal.w * gradientRelative;
 
 	float min = -(localM * offset);
