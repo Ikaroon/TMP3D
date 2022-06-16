@@ -10,6 +10,8 @@ All notable changes to this project will be documented in this file.
 ### Changed
 - Improved Temporal Raymarcher quality
 - Reduced "if"-usage but doubled pass
+- Slightly improved SDF raymarcher quality and performance
+- Slightly improved outline quality
 
 ## [v0.1.1] - 2022-05-27
 ### Added

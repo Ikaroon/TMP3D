@@ -150,13 +150,14 @@ Shader "TextMeshPro/3D/Unlit"
 
 				for (int i = 0; i <= MAX_STEPS; i++)
 				{
-
-					float offset = edge;
-					NextRaymarch(offset);
+					NextRaymarch(edge);
 					float3 localPos = GetRaymarchLocalPos();
 					float bound = GetRaymarchBound();
 					float value = GetRaymarchValue();
 					float3 mask3D = GetRaymarchMask3D();
+
+					//o.color = float4(value.xxx, 1);
+					//return o;
 
 					clip(bound);
 
@@ -166,7 +167,7 @@ Shader "TextMeshPro/3D/Unlit"
 						float progress = saturate(InverseLerp(0, charDepth, depth));
 						progress = saturate(lerp(depthMapped.x, depthMapped.y, progress));
 						float3 c = tex2D(_DepthAlbedo, float2(progress, 0.5)) * _Color.rgb;
-						float3 face = tex2D(_FaceTex, mask3D.xy * _FaceTex_ST.xy - _FaceTex_ST.zw);
+						float3 face = tex2D(_FaceTex, localPos.xy * _FaceTex_ST.xy - _FaceTex_ST.zw);
 						c *= face;
 
 						o.depth = compute_depth(UnityObjectToClipPos(localPos));
@@ -175,6 +176,7 @@ Shader "TextMeshPro/3D/Unlit"
 					}
 				}
 
+				clip(-1);
 				return ValidateOutput(o, MAX_STEPS);
 			}
 
@@ -287,6 +289,7 @@ Shader "TextMeshPro/3D/Unlit"
 
 				float bold = step(input.tmp.y, 0);
 				float edge = lerp(_WeightNormal, _WeightBold, bold);
+				edge += _OutlineWidth;
 
 				float charDepth = input.tmp3d.x;
 				float2 depthMapped = input.tmp3d.yz;
@@ -295,15 +298,13 @@ Shader "TextMeshPro/3D/Unlit"
 
 				for (int i = 0; i <= MAX_STEPS; i++)
 				{
-
-					float offset = edge;
-					NextRaymarch(offset);
+					NextRaymarch(edge);
 					float3 localPos = GetRaymarchLocalPos();
 					float bound = GetRaymarchBound();
 					float value = GetRaymarchValue();
 					float3 mask3D = GetRaymarchMask3D();
 
-					if (value <= edge + _OutlineWidth)
+					if (value <= edge)
 					{
 						o.depth = compute_depth(UnityObjectToClipPos(localPos));
 						o.color = _OutlineColor;

@@ -42,10 +42,15 @@ float3 PositionToMask(float3 localPos, tmp3d_g2f input)
 	return mask3D;
 }
 
-float GradientToLocalLength(tmp3d_g2f input)
+float GradientToLocalLength(tmp3d_g2f input, float value, float offset)
 {
-	float l = input.boundariesLocal.z;
-	return l * 0.01 * _GradientScale;
+	float gradientUV = _GradientScale / _TextureHeight;
+	float gradientRelative = gradientUV / (input.boundariesUV.w * 2);
+	float localM = input.boundariesLocal.w * gradientRelative;
+
+	float min = -(localM * offset);
+	float max = localM * (1 - offset);
+	return lerp(min, max, value);
 }
 
 tmp3d_v2g TMP3D_VERT(tmp3d_a2v input)
