@@ -1,7 +1,7 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
-## [Unreleased]
+## [v0.1.2] - 2022-09-19
 ### Added
 - Support for face texture rendering
 - Support for underlined text rendering
