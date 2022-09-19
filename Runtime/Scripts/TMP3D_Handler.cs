@@ -97,6 +97,8 @@ namespace Ikaroon.TMP3D
 						continue;
 
 					lastVertexIndex = vertexIndex;
+					var underlineIndex = charInfo.underlineVertexIndex;
+					var strikethroughIndex = charInfo.strikethroughVertexIndex;
 
 					var tmp3DChar = m_tmp3DCharacters[j];
 					var tmp3DData = new Vector4(tmp3DChar.m_depth, tmp3DChar.m_depthMapping.x, tmp3DChar.m_depthMapping.y, 0);
@@ -105,6 +107,42 @@ namespace Ikaroon.TMP3D
 					m_cachedMeshUVs[vertexIndex + 1] = tmp3DData;
 					m_cachedMeshUVs[vertexIndex + 2] = tmp3DData;
 					m_cachedMeshUVs[vertexIndex + 3] = tmp3DData;
+
+					if (underlineIndex != vertexIndex)
+					{
+						m_cachedMeshUVs[underlineIndex + 0] = tmp3DData;
+						m_cachedMeshUVs[underlineIndex + 1] = tmp3DData;
+						m_cachedMeshUVs[underlineIndex + 2] = tmp3DData;
+						m_cachedMeshUVs[underlineIndex + 3] = tmp3DData;
+
+						m_cachedMeshUVs[underlineIndex + 4] = tmp3DData;
+						m_cachedMeshUVs[underlineIndex + 5] = tmp3DData;
+						m_cachedMeshUVs[underlineIndex + 6] = tmp3DData;
+						m_cachedMeshUVs[underlineIndex + 7] = tmp3DData;
+
+						m_cachedMeshUVs[underlineIndex + 8] = tmp3DData;
+						m_cachedMeshUVs[underlineIndex + 9] = tmp3DData;
+						m_cachedMeshUVs[underlineIndex + 10] = tmp3DData;
+						m_cachedMeshUVs[underlineIndex + 11] = tmp3DData;
+					}
+
+					if (strikethroughIndex != vertexIndex)
+					{
+						m_cachedMeshUVs[strikethroughIndex + 0] = tmp3DData;
+						m_cachedMeshUVs[strikethroughIndex + 1] = tmp3DData;
+						m_cachedMeshUVs[strikethroughIndex + 2] = tmp3DData;
+						m_cachedMeshUVs[strikethroughIndex + 3] = tmp3DData;
+
+						m_cachedMeshUVs[strikethroughIndex + 4] = tmp3DData;
+						m_cachedMeshUVs[strikethroughIndex + 5] = tmp3DData;
+						m_cachedMeshUVs[strikethroughIndex + 6] = tmp3DData;
+						m_cachedMeshUVs[strikethroughIndex + 7] = tmp3DData;
+
+						m_cachedMeshUVs[strikethroughIndex + 8] = tmp3DData;
+						m_cachedMeshUVs[strikethroughIndex + 9] = tmp3DData;
+						m_cachedMeshUVs[strikethroughIndex + 10] = tmp3DData;
+						m_cachedMeshUVs[strikethroughIndex + 11] = tmp3DData;
+					}
 				}
 
 				mesh.SetUVs(2, m_cachedMeshUVs);

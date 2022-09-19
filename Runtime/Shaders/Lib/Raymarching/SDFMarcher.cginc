@@ -23,15 +23,12 @@ void NextRaymarch(float offset)
 	Temp_Bound = IsInBounds(Temp_Mask3D);
 	Temp_Value = 1 - SampleSDF3D(saturate(Temp_Mask3D), Temp_Input);
 
-	float sdfDistance = max((Temp_Value - offset) * GradientToLocalLength(Temp_Input), _RaymarchMinStep);
+	float sdfDistance = GradientToLocalLength(Temp_Input, Temp_Value, offset);
 	float3 viewDir = GetRaymarchLocalDirection();
-	float length1 = length(normalize(viewDir.xy) * sdfDistance);
-	float length2 = length(viewDir.xy);
+	float length1 = length(viewDir.xy);
+	float ratio = sdfDistance / length1;
 
-	float ratio = length1 / length2;
-	viewDir *= ratio;
-
-	Temp_Progress += length(viewDir);
+	Temp_Progress += max(length(viewDir) * ratio, _RaymarchMinStep);
 }
 
 #endif

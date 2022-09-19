@@ -1,6 +1,18 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [v0.1.2] - 2022-09-19
+### Added
+- Support for face texture rendering
+- Support for underlined text rendering
+- Support for strikethrough text rendering
+
+### Changed
+- Improved Temporal Raymarcher quality
+- Reduced "if"-usage but doubled pass
+- Slightly improved SDF raymarcher quality and performance
+- Slightly improved outline quality
+
 ## [v0.1.1] - 2022-05-27
 ### Added
 - Simple Raymarcher
