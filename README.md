@@ -93,16 +93,8 @@ There are two ways of creating a TextMeshPro 3D.
   7. You have now access to 3D text!
 
 ## Notice
-Work on this project happens in my freetime and, therefore, I cannot promise if and when certain features are added. I am considering to open this up for contribution but for now you can manipulate the code as you please. This project is MIT licensed and may be used freely. (Check the license file for more information)
+Work on this project happens in my freetime and, therefore, I cannot promise if and when certain features are added.
 
 ## Bugs
 When you find a bug you can [create a bug report](https://github.com/Ikaroon/TMP3D/issues/new/choose) on Github!
 I will try to cover them as quickly as possible.
-
-## Donation
-If this project helped you, you can treat me to a coffee if you want :coffee:
-
-[![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/B0B1CKI7W)
-
-## Contact
-If you need support with this package please contact me: `support@marian-brinkmann.com`
